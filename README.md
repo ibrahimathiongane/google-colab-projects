@@ -77,6 +77,16 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
 - Login/register are rate-limited (sliding window per email and per IP).
 - Containers run as a non-root user; images are pinned.
 
+## PWA (Phase 1)
+
+- Installable on iOS/Android/desktop: `frontend/public/manifest.json` +
+  icons (192/512/maskable/apple-touch).
+- Service worker (`frontend/public/sw.js`): app-shell precache, network-first
+  navigations with offline fallback, cache-first for hashed assets.
+  **`/api/*` is never cached.**
+- Registered only in production builds (`frontend/src/pwa.js`); `sw.js` and
+  `manifest.json` are served with `Cache-Control: no-cache` by nginx.
+
 ## Tests
 
 ```bash

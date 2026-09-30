@@ -41,3 +41,4 @@ npm --prefix frontend run lint
 - Check-in upsert: one per `(habit_id, date)` — re-checking toggles completion. Dates are `YYYY-MM-DD` in the *user's* timezone (`localDate()`).
 - Lint: `ruff.toml` at the root pins the Python rule set; ESLint flat config lives in `frontend/eslint.config.js`.
 - Tests must run in **separate pytest processes** (services share module names `main`, `models`, `db`, `schemas`) — `scripts/test.sh` does this for you.
+- PWA: `frontend/public/` holds `manifest.json`, `sw.js` and the generated icons (from `icon.svg` / `icon-maskable.svg` via `rsvg-convert`). The SW is registered **only in production** (`frontend/src/pwa.js`); bump `VERSION` in `sw.js` when the cache strategy changes. nginx serves `sw.js`/`manifest.json` with `no-cache` — every location that declares an `add_header` must `include /etc/nginx/security-headers.conf` (nginx does not inherit headers otherwise).

@@ -32,6 +32,15 @@ if [ -d frontend/node_modules ]; then
   run npm --prefix frontend run lint
   run npm --prefix frontend run test
   run npm --prefix frontend run build
+
+  # The PWA artifacts must survive the build.
+  for artifact in manifest.json sw.js icon-192.png icon-512.png \
+                  icon-maskable-512.png apple-touch-icon.png; do
+    if [ ! -f "frontend/dist/$artifact" ]; then
+      echo "==> MISSING frontend/dist/$artifact"
+      FAILED=1
+    fi
+  done
 else
   echo
   echo "==> frontend skipped (run: npm --prefix frontend ci)"

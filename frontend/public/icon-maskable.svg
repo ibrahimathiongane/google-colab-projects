@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Habit Tracker">
+  <rect width="512" height="512" fill="#4caf50"/>
+  <g transform="translate(256 256) scale(0.68) translate(-256 -256)">
+    <path d="M256 424 V236" stroke="#e8f5e9" stroke-width="30" stroke-linecap="round"/>
+    <ellipse cx="340" cy="206" rx="88" ry="56" transform="rotate(-32 340 206)" fill="#e8f5e9"/>
+    <ellipse cx="176" cy="252" rx="76" ry="48" transform="rotate(30 176 252)" fill="#c8e6c9"/>
+  </g>
+</svg>
