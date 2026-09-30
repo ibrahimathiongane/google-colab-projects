@@ -1,2 +1,8 @@
-node_modules/
-dist/
+# Applies to builds with the repo root as context (landing).
+# Patterns are matched at any depth.
+**/node_modules/
+**/dist/
+.git/
+.venv/
+.env
+__pycache__/

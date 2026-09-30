@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Habit Tracker">
+  <rect width="512" height="512" rx="104" fill="#0f1011"/>
+  <rect x="6" y="6" width="500" height="500" rx="98" fill="none" stroke="#23252a" stroke-width="4"/>
+  <path d="M256 424 V236" stroke="#5e6ad2" stroke-width="30" stroke-linecap="round"/>
+  <ellipse cx="340" cy="206" rx="88" ry="56" transform="rotate(-32 340 206)" fill="#828fff"/>
+  <ellipse cx="176" cy="252" rx="76" ry="48" transform="rotate(30 176 252)" fill="#5e6ad2"/>
+</svg>

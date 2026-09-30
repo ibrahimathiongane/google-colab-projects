@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "Habit Tracker — Build habits that stick"
+  },
+  "nav": {
+    "features": "Features",
+    "science": "Science",
+    "pricing": "Pricing",
+    "openApp": "Open app"
+  },
+  "hero": {
+    "title": "Build habits that stick — the science-based way",
+    "subtitle": "Tiny anchored behaviors, automaticity and recovery rate. Behavioral science, not another streak counter.",
+    "ctaPrimary": "Start free",
+    "ctaSecondary": "See the science",
+    "screenshotAlt": "The Habit Tracker dashboard showing check-ins, streaks and an automaticity prompt"
+  },
+  "features": {
+    "title": "Built on behavioral science",
+    "subtitle": "Three ideas from habit research, wired into every check-in.",
+    "tiny": {
+      "title": "Tiny Habits method",
+      "body": "Anchor a micro-behavior to a routine you already have, then celebrate. Small enough that it can't fail."
+    },
+    "automaticity": {
+      "title": "Automaticity tracking",
+      "body": "Rate how automatic each check-in felt from 1 to 10 and watch habit strength build week after week."
+    },
+    "recovery": {
+      "title": "Recovery rate",
+      "body": "Missed a day? Your recovery rate measures how you bounce back — because progress isn't a perfect streak."
+    }
+  },
+  "science": {
+    "title": "Consistency beats intensity",
+    "body": "Success rate, habit strength and your best time of day — insights that show where your practice is actually working.",
+    "screenshotAlt": "Insights screen with success rate, habit strength and a consistency chart"
+  },
+  "pricing": {
+    "title": "Simple, honest pricing",
+    "subtitle": "Start free. Upgrade when the habit is worth it.",
+    "free": {
+      "name": "Free",
+      "price": "$0",
+      "period": "forever",
+      "body": "Everything you need to build one habit at a time.",
+      "cta": "Start free"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "$39.99",
+      "period": "per year",
+      "body": "Unlimited habits, full insights history, priority roadmap.",
+      "cta": "Coming soon"
+    },
+    "lifetime": {
+      "name": "Lifetime",
+      "price": "$79",
+      "period": "once",
+      "body": "Pay once, keep everything — for early believers.",
+      "cta": "Coming soon"
+    },
+    "note": "Payments aren't enabled yet — the app is free while we build it."
+  },
+  "footer": {
+    "tagline": "Science-based habit tracking — tiny habits, real automaticity.",
+    "app": "Open app",
+    "copyright": "© 2026 Habit Tracker"
+  }
+}

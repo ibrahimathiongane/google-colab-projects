@@ -14,7 +14,13 @@ A microservices habit tracker built on behavioral science (BJ Fogg's Tiny Habits
                                        ┌────▼────┐   ┌────────────┐
                                        │ Postgres │◀──│ migrations │
                                        └─────────┘   │ (Alembic)  │
-                                                     └────────────┘
+                                                    └────────────┘
+
+┌────────────┐  fully separate: static, no API, no gateway
+│  Landing   │──▶ "Open app" CTAs → VITE_APP_URL (the frontend)
+│ React/Vite │
+│ :5174      │
+└────────────┘
 ```
 
 ## Quick start
@@ -25,6 +31,7 @@ docker compose up --build
 ```
 
 - Frontend: http://localhost:5173
+- Landing: http://localhost:5174
 - API Gateway: http://localhost:8000
 - Health: `GET /health` on the gateway and on every service
 
@@ -39,6 +46,7 @@ docker compose up --build
 | insights | 8004 | Success rate, habit strength, best time |
 | migrations | — | Alembic schema bootstrap (runs once) |
 | frontend | 5173 | React SPA served by nginx (proxies `/api` → gateway) |
+| landing | 5174 | Static marketing site (no API, no gateway) |
 
 ## Scientific model
 
@@ -99,6 +107,23 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
   (`frontend/src/i18n/apiErrors.js`); unknown messages pass through as-is.
 - Dates are formatted with the active locale (`en-US` / `fr-FR`).
 
+## Design system (Linear-inspired)
+
+Dark-first, achromatic canvas + one accent (`#5e6ad2`), shared by the app
+**and** the landing page. **Reference: `frontend/DESIGN.md`.**
+
+- **Tokens** in `frontend/src/tokens.css`: canvas/surfaces, hairlines, ink
+  opacity scale, primary accent, indicator colors (success/danger/warning),
+  type, 4px spacing grid, 2/6/12 radii, motion curves. Never hardcode a hex
+  value in a component.
+- **Type**: self-hosted Inter Variable (`@fontsource-variable/inter`, no
+  CDN), negative tracking on titles, mono (`--font-mono`) for metadata only
+  (metrics, badges, dates).
+- **Buttons** default to a quiet ghost — the primary CTA (`--primary`) is
+  used once per view. Semantic colors appear only as status signals.
+- Verified headless (Chromium): no horizontal overflow at 375px, computed
+  canvas `#08090a`, CTA `#5e6ad2`, Inter loaded, negative tracking.
+
 ## Tests
 
 ```bash
@@ -107,7 +132,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 PYTHON=.venv/bin/python ./scripts/test.sh
 ```
 
-Backend and frontend suites can be run separately:
+Backend, frontend and landing suites can be run separately:
 
 ```bash
 pip install -r requirements-dev.txt
@@ -118,4 +143,8 @@ python -m pytest services/users/tests -q   # services share module names
 npm --prefix frontend ci
 npm --prefix frontend run lint
 npm --prefix frontend run test
+
+npm --prefix landing ci
+npm --prefix landing run lint
+npm --prefix landing run test
 ```

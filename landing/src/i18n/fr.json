@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "Habit Tracker — Adoptez des habitudes qui tiennent"
+  },
+  "nav": {
+    "features": "Fonctionnalités",
+    "science": "Science",
+    "pricing": "Tarifs",
+    "openApp": "Ouvrir l'app"
+  },
+  "hero": {
+    "title": "Adoptez des habitudes qui tiennent — avec la science",
+    "subtitle": "Micro-comportements ancrés, automatisme et taux de reprise. De la science du comportement, pas un compteur de séries de plus.",
+    "ctaPrimary": "Commencer gratuitement",
+    "ctaSecondary": "Voir la science",
+    "screenshotAlt": "Le tableau de bord Habit Tracker avec pointages, séries et questionnaire d'automatisme"
+  },
+  "features": {
+    "title": "Construit sur la science du comportement",
+    "subtitle": "Trois idées issues de la recherche sur les habitudes, intégrées à chaque pointage.",
+    "tiny": {
+      "title": "Méthode Tiny Habits",
+      "body": "Ancrez un micro-comportement à une routine existante, puis célébrez. Assez petit pour ne pas échouer."
+    },
+    "automaticity": {
+      "title": "Suivi de l'automatisme",
+      "body": "Évaluez à quel point chaque pointage était automatique (de 1 à 10) et voyez la force de l'habitude grandir."
+    },
+    "recovery": {
+      "title": "Taux de reprise",
+      "body": "Jour manqué ? Le taux de reprise mesure votre capacité à rebondir — le progrès n'est pas une série parfaite."
+    }
+  },
+  "science": {
+    "title": "La régularité bat l'intensité",
+    "body": "Taux de réussite, force de l'habitude et votre meilleur moment de la journée — des analyses qui montrent ce qui fonctionne vraiment.",
+    "screenshotAlt": "Écran d'analyses avec taux de réussite, force de l'habitude et graphique de régularité"
+  },
+  "pricing": {
+    "title": "Des tarifs simples et honnêtes",
+    "subtitle": "Commencez gratuitement. Passez à l'échelle quand l'habitude le mérite.",
+    "free": {
+      "name": "Gratuit",
+      "price": "0 $",
+      "period": "pour toujours",
+      "body": "Tout ce qu'il faut pour construire une habitude à la fois.",
+      "cta": "Commencer"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "39,99 $",
+      "period": "par an",
+      "body": "Habitudes illimitées, historique complet des analyses, feuille de route prioritaire.",
+      "cta": "Bientôt"
+    },
+    "lifetime": {
+      "name": "À vie",
+      "price": "79 $",
+      "period": "une fois",
+      "body": "Payez une fois, gardez tout — pour les premiers convaincus.",
+      "cta": "Bientôt"
+    },
+    "note": "Les paiements ne sont pas encore activés — l'app est gratuite le temps de la construire."
+  },
+  "footer": {
+    "tagline": "Suivi d'habitudes basé sur la science — petites habitudes, vrai automatisme.",
+    "app": "Ouvrir l'app",
+    "copyright": "© 2026 Habit Tracker"
+  }
+}

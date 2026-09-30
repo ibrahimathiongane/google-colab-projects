@@ -14,6 +14,7 @@ Science-based habit tracker (microservices). Differentiator: behavioral science 
   - `insights/` :8004 — success rate, habit strength, best time
 - **Migrations** (`migrations/`): Alembic, canonical schema (`migrations/models.py`), runs once via the `migrations` compose service.
 - **Frontend** (`frontend/`): React + Vite + Recharts. Dev on :5173 (vite), prod behind nginx.
+- **Landing** (`landing/`): separate static marketing site (React + Vite, **no API, no gateway**). Dev on :5174, prod behind its own nginx; build context is the repo root because it imports `frontend/src/tokens.css`. "Open app" CTAs point to `VITE_APP_URL` (default `http://localhost:5173`).
 - **DB**: PostgreSQL 16 (shared, each service mirrors the models it needs in its own `models.py`).
 
 ## Commands
@@ -29,6 +30,8 @@ PYTHON=python3 ./scripts/test.sh    # ruff + pytest per app + eslint + vitest + 
 python -m pytest gateway/tests -q   # a single suite (one pytest process per app)
 npm --prefix frontend run test
 npm --prefix frontend run lint
+npm --prefix landing run dev        # landing dev server on :5174
+npm --prefix landing run test
 ```
 
 ## Conventions
@@ -43,3 +46,5 @@ npm --prefix frontend run lint
 - Tests must run in **separate pytest processes** (services share module names `main`, `models`, `db`, `schemas`) — `scripts/test.sh` does this for you.
 - PWA: `frontend/public/` holds `manifest.json`, `sw.js` and the generated icons (from `icon.svg` / `icon-maskable.svg` via `rsvg-convert`). The SW is registered **only in production** (`frontend/src/pwa.js`); bump `VERSION` in `sw.js` when the cache strategy changes. nginx serves `sw.js`/`manifest.json` with `no-cache` — every location that declares an `add_header` must `include /etc/nginx/security-headers.conf` (nginx does not inherit headers otherwise).
 - i18n: i18next, dictionaries in `frontend/src/i18n/{en,fr}.json` — **every new user-facing string goes into both files** (a test fails otherwise). Components use `useTranslation()`; backend error strings are mapped in `frontend/src/i18n/apiErrors.js` (unknown messages pass through). Language lives in `localStorage.lang` and drives `<html lang>`/`document.title`.
+- Design: Linear-inspired dark-first tokens in `frontend/src/tokens.css`, rules in `frontend/DESIGN.md` — **no hardcoded hex in components** (charts: CSS sets the fill from a token; the JSX value is only a static fallback). Buttons default to ghost; `--primary` is the single accent (CTA/focus/brand), semantic colors are status-only. Inter Variable is self-hosted (`@fontsource-variable/inter`), mono only for metadata, titles use negative tracking, sentence case everywhere.
+- Landing: never call `/api` (no proxy in `landing/nginx.conf`); it imports the app's tokens via `../../frontend/src/tokens.css` (so its Docker build uses the repo root as context). `landing/public/images/*.png` are **real app screenshots** — regenerate them from the app when the UI changes.

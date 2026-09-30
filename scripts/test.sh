@@ -46,6 +46,24 @@ else
   echo "==> frontend skipped (run: npm --prefix frontend ci)"
 fi
 
+# --- Landing ------------------------------------------------------------------
+if [ -d landing/node_modules ]; then
+  run npm --prefix landing run lint
+  run npm --prefix landing run test
+  run npm --prefix landing run build
+
+  # Marketing assets must survive the build.
+  for artifact in images/dashboard.png images/insights.png; do
+    if [ ! -f "landing/dist/$artifact" ]; then
+      echo "==> MISSING landing/dist/$artifact"
+      FAILED=1
+    fi
+  done
+else
+  echo
+  echo "==> landing skipped (run: npm --prefix landing ci)"
+fi
+
 echo
 if [ "$FAILED" -ne 0 ]; then
   echo "FAILURES detected"
