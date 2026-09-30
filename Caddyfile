@@ -1,0 +1,28 @@
+# Edge config for production (Caddy auto-HTTPS with Let's Encrypt).
+# Env: DOMAIN (marketing apex), APP_HOST (app subdomain) — see .env.
+#
+#   landing  →  https://DOMAIN       (marketing site)
+#   app      →  https://APP_HOST     (SPA + /api reverse proxy)
+
+{$DOMAIN} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+	reverse_proxy landing:80
+}
+
+www.{$DOMAIN} {
+	redir https://{$DOMAIN}{uri} permanent
+}
+
+{$APP_HOST} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+	# The frontend nginx already proxies /api → gateway and sets CSP/etc.
+	reverse_proxy frontend:80
+}

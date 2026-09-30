@@ -64,6 +64,18 @@ else
   echo "==> landing skipped (run: npm --prefix landing ci)"
 fi
 
+# --- Production deploy config -------------------------------------------------
+# docker-compose.prod.yml must stay renderable (required vars fail fast,
+# only Caddy publishes ports) — validated with dummy values.
+if command -v docker >/dev/null 2>&1; then
+  run env DOMAIN=example.com APP_HOST=app.example.com \
+    ALLOWED_ORIGINS=https://app.example.com JWT_SECRET=dummy POSTGRES_PASSWORD=dummy \
+    docker compose -f docker-compose.yml -f docker-compose.prod.yml config -q
+else
+  echo
+  echo "==> deploy config skipped (docker not available)"
+fi
+
 echo
 if [ "$FAILED" -ne 0 ]; then
   echo "FAILURES detected"

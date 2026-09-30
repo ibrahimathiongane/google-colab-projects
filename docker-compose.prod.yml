@@ -1,0 +1,62 @@
+# Production overrides — combine with the base file:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Rules:
+#   - only Caddy publishes ports (80/443): Postgres, the gateway and both web
+#     apps stay on the internal Docker network;
+#   - required prod vars fail fast with a clear message if missing:
+#       DOMAIN, APP_HOST, ALLOWED_ORIGINS, JWT_SECRET, POSTGRES_PASSWORD.
+services:
+  postgres:
+    ports: !override []
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set (strong, e.g. openssl rand -hex 24)}
+
+  gateway:
+    ports: !override []
+    environment:
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?ALLOWED_ORIGINS must be set (e.g. https://app.example.com)}
+
+  frontend:
+    ports: !override []
+
+  landing:
+    ports: !override []
+    build:
+      args:
+        VITE_APP_URL: https://${APP_HOST:?APP_HOST must be set (e.g. app.example.com)}
+
+  # TLS terminator + single public entrypoint (auto-HTTPS via Let's Encrypt,
+  # certificates persisted in the caddy_data volume).
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN must be set (e.g. example.com)}
+      APP_HOST: ${APP_HOST:?APP_HOST must be set (e.g. app.example.com)}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      frontend:
+        condition: service_healthy
+      landing:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -O /dev/null http://localhost:2019/config/ || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:

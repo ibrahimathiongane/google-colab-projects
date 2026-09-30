@@ -72,3 +72,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: docker compose build
+      # The prod override must stay renderable (required vars fail fast)
+      # and the edge config must stay valid.
+      - name: Production compose config
+        env:
+          DOMAIN: example.com
+          APP_HOST: app.example.com
+          ALLOWED_ORIGINS: https://app.example.com
+          POSTGRES_PASSWORD: ci-only
+        run: docker compose -f docker-compose.yml -f docker-compose.prod.yml config -q
+      - name: Caddyfile validates
+        env:
+          DOMAIN: example.com
+          APP_HOST: app.example.com
+        run: >
+          docker run --rm -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro"
+          -e DOMAIN -e APP_HOST caddy:2-alpine
+          caddy validate --config /etc/caddy/Caddyfile

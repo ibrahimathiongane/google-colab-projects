@@ -35,6 +35,17 @@ docker compose up --build
 - API Gateway: http://localhost:8000
 - Health: `GET /health` on the gateway and on every service
 
+## Production deployment
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+Caddy is the only public entrypoint (80/443) and issues HTTPS certificates
+automatically: `DOMAIN` → landing, `APP_HOST` → the app (Postgres and the
+gateway stay on the internal network). Full guide — server setup, DNS,
+backups, day-2 operations: **[DEPLOY.md](DEPLOY.md)**.
+
 ## Services
 
 | Service | Port | Purpose |

@@ -15,6 +15,7 @@ Science-based habit tracker (microservices). Differentiator: behavioral science 
 - **Migrations** (`migrations/`): Alembic, canonical schema (`migrations/models.py`), runs once via the `migrations` compose service.
 - **Frontend** (`frontend/`): React + Vite + Recharts. Dev on :5173 (vite), prod behind nginx.
 - **Landing** (`landing/`): separate static marketing site (React + Vite, **no API, no gateway**). Dev on :5174, prod behind its own nginx; build context is the repo root because it imports `frontend/src/tokens.css`. "Open app" CTAs point to `VITE_APP_URL` (default `http://localhost:5173`).
+- **Edge (prod)**: `docker-compose.prod.yml` + `Caddyfile` — Caddy is the only public entrypoint (80/443, auto-HTTPS): `DOMAIN` → landing, `APP_HOST` → frontend. Postgres/gateway are never published. Full guide: `DEPLOY.md`.
 - **DB**: PostgreSQL 16 (shared, each service mirrors the models it needs in its own `models.py`).
 
 ## Commands
@@ -26,12 +27,17 @@ docker compose up -d                # detached
 docker compose logs -f <service>    # view logs
 docker compose down                 # stop
 
-PYTHON=python3 ./scripts/test.sh    # ruff + pytest per app + eslint + vitest + build
+PYTHON=python3 ./scripts/test.sh    # ruff + pytest per app + eslint + vitest + build + prod config
 python -m pytest gateway/tests -q   # a single suite (one pytest process per app)
 npm --prefix frontend run test
 npm --prefix frontend run lint
 npm --prefix landing run dev        # landing dev server on :5174
 npm --prefix landing run test
+
+# Production (on the server — see DEPLOY.md)
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+./scripts/deploy.sh                 # git pull + rebuild + restart
+COMPOSE_FLAGS="-f docker-compose.yml -f docker-compose.prod.yml" ./scripts/backup.sh
 ```
 
 ## Conventions
