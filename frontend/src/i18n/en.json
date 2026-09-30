@@ -30,7 +30,7 @@
     "undo": "Undo",
     "edit": "✎ Edit",
     "streak_one": "{{count}} day streak",
-    "streak_other": "{{count}} day streaks",
+    "streak_other": "{{count}} day streak",
     "deleteConfirm": "Delete \"{{name}}\"? Its history stays in Insights.",
     "automaticity": "automaticity {{value}}/10",
     "howAutomatic": "How automatic did this feel?",

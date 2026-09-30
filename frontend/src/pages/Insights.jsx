@@ -81,7 +81,7 @@ export default function Insights() {
               <XAxis dataKey="date" />
               <YAxis hide />
               <Tooltip />
-              <Bar dataKey="completed" fill="#4caf50" />
+              <Bar dataKey="completed" fill="#5e6ad2" />
             </BarChart>
           </ResponsiveContainer>
         </div>

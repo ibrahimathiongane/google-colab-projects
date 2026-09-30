@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { api, setTokens } from "./api";
 import LanguageSwitcher from "./components/LanguageSwitcher";
@@ -45,9 +45,9 @@ export default function App() {
       {user && (
         <nav className="nav">
           <span className="logo">🌱 Habit Tracker</span>
-          <Link to="/">{t("nav.dashboard")}</Link>
-          <Link to="/new">{t("nav.newHabit")}</Link>
-          <Link to="/insights">{t("nav.insights")}</Link>
+          <NavLink to="/">{t("nav.dashboard")}</NavLink>
+          <NavLink to="/new">{t("nav.newHabit")}</NavLink>
+          <NavLink to="/insights">{t("nav.insights")}</NavLink>
           <LanguageSwitcher />
           <button onClick={logout}>{t("nav.logout")}</button>
         </nav>

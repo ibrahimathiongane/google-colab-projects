@@ -1,261 +1,375 @@
+/* ============================================================================
+   Habit Tracker — dark-first UI on Linear-grade tokens (see src/tokens.css
+   and frontend/DESIGN.md). Hairlines over shadows, hierarchy by ink opacity,
+   one accent (--primary) for CTAs/focus, semantic colors only as signals.
+   ========================================================================== */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
-  background: #f5f7fa;
-  color: #333;
+html {
+  color-scheme: dark;
 }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--canvas);
+  color: var(--ink-70);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: 30px;
+  letter-spacing: var(--tracking-tighter);
+}
+
+h2 {
+  font-size: 24px;
+  letter-spacing: var(--tracking-tighter);
+}
+
+h3 {
+  font-size: 15px;
+  letter-spacing: var(--tracking-tight);
+}
+
+::selection {
+  background: var(--primary-ring);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Dark, quiet scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--hairline);
+  border-radius: 5px;
+  border: 2px solid var(--canvas);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--hairline-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* --- Layout --------------------------------------------------------------- */
 
 .app {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0 20px var(--space-7);
 }
+
+/* --- Nav ------------------------------------------------------------------ */
 
 .nav {
   display: flex;
-  gap: 20px;
+  gap: var(--space-4) var(--space-5);
   align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid #e0e0e0;
-  margin-bottom: 30px;
+  flex-wrap: wrap;
+  padding: var(--space-3) 0;
+  border-bottom: var(--border-hairline);
+  margin-bottom: var(--space-6);
 }
 
 .nav .logo {
-  font-weight: bold;
-  font-size: 1.2em;
+  font-weight: var(--weight-semibold);
+  font-size: 15px;
+  letter-spacing: var(--tracking-tight);
+  color: var(--ink);
   margin-right: auto;
 }
 
 .nav a {
-  color: #4caf50;
+  color: var(--ink-50);
   text-decoration: none;
+  font-size: 13.5px;
+  font-weight: var(--weight-medium);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid transparent;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.nav a:hover {
+  color: var(--ink);
+}
+
+.nav a.active {
+  color: var(--ink);
+  border-bottom-color: var(--primary);
 }
 
 .nav button {
   background: none;
   border: none;
-  color: #999;
+  color: var(--ink-40);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.nav button:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+
+/* --- Language switcher ----------------------------------------------------- */
+
+.lang-switcher {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--surface-1);
+  border: var(--border-hairline);
+  border-radius: var(--radius-md);
+}
+
+.lang-switcher button {
+  padding: 3px 8px;
+  font-size: 11.5px;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.01em;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--ink-40);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.lang-switcher button:hover {
+  color: var(--ink-70);
+}
+
+.lang-switcher button.active {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
+/* --- Buttons ---------------------------------------------------------------- */
+
+/* Buttons default to a quiet ghost — never let the user-agent style leak. */
+button {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: var(--weight-medium);
+  padding: 9px 14px;
+  background: transparent;
+  color: var(--ink-70);
+  border: var(--border-hairline);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+.btn-primary,
+.btn-done {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  border: none;
+}
+
+.btn-primary:hover:not(:disabled),
+.btn-done:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.btn-primary:disabled {
+  background: var(--surface-2);
+  color: var(--ink-30);
+}
+
+.btn-undo,
+.btn-edit {
+  background: transparent;
+  color: var(--ink-50);
+  border: var(--border-hairline);
+}
+
+.btn-undo:hover,
+.btn-edit:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+  border-color: var(--hairline-strong);
+}
+
+.btn-edit {
+  font-size: 13px;
+  padding: 7px 11px;
+}
+
+.btn-delete {
+  background: transparent;
+  color: var(--ink-30);
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.btn-delete:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+/* --- Forms ------------------------------------------------------------------ */
+
+input {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--surface-1);
+  border: var(--border-hairline);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 14px;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+input::placeholder {
+  color: var(--ink-30);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-ring);
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  background: var(--danger-soft);
+  border: 1px solid rgba(235, 87, 87, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+}
+
+.link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary-hover);
+  font-size: 13.5px;
+  font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
 }
 
+.link:hover {
+  color: var(--ink);
+}
+
+/* --- Auth ------------------------------------------------------------------- */
+
 .auth {
-  max-width: 400px;
-  margin: 80px auto;
+  max-width: 380px;
+  margin: var(--space-9) auto var(--space-8);
   text-align: center;
 }
 
 .auth h1 {
-  font-size: 2em;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-2);
 }
 
 .tagline {
-  color: #666;
-  margin-bottom: 30px;
+  color: var(--ink-50);
+  font-size: 14.5px;
+  margin-bottom: var(--space-6);
 }
 
 .auth form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--space-3);
 }
 
-input {
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1em;
-}
+/* --- Dashboard / habit card -------------------------------------------------- */
 
-button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1em;
-  cursor: pointer;
-}
-
-.btn-primary {
-  background: #4caf50;
-  color: white;
-}
-
-.btn-primary:disabled {
-  background: #ccc;
-}
-
-.btn-done {
-  background: #4caf50;
-  color: white;
-}
-
-.btn-undo {
-  background: #f0f0f0;
-}
-
-.btn-delete {
-  background: none;
-  color: #ccc;
-  font-size: 1.5em;
-}
-
-.error {
-  color: #e53935;
-}
-
-.link {
-  background: none;
-  color: #4caf50;
-  text-decoration: underline;
+.dashboard h2 {
+  font-size: 24px;
+  letter-spacing: var(--tracking-tighter);
+  margin-bottom: var(--space-4);
 }
 
 .habit-card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 15px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  align-items: flex-start;
+  gap: var(--space-4);
+  background: var(--surface-1);
+  border: var(--border-hairline);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-panel);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.habit-card:hover {
+  border-color: var(--hairline-strong);
 }
 
 .habit-card.done {
-  opacity: 0.7;
-  border-left: 4px solid #4caf50;
+  border-left: 3px solid var(--success);
 }
 
-.habit-info h3 {
-  margin-bottom: 5px;
-}
-
-.if-then {
-  color: #666;
-  font-style: italic;
-  font-size: 0.9em;
-}
-
-.streak {
-  color: #ff9800;
-  font-size: 0.85em;
-}
-
-.habit-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.wizard {
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.wizard h2 {
-  margin-bottom: 10px;
-}
-
-.science {
-  color: #666;
-  font-size: 0.9em;
-  margin-bottom: 20px;
-}
-
-.steps-indicator {
-  margin-bottom: 20px;
-  color: #4caf50;
-}
-
-.steps-indicator span {
-  margin-right: 5px;
-  opacity: 0.3;
-}
-
-.steps-indicator span.active {
-  opacity: 1;
-}
-
-.wizard h3 {
-  margin-bottom: 5px;
-}
-
-.wizard p {
-  color: #666;
-  margin-bottom: 15px;
-}
-
-.wizard input {
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-.wizard-nav {
-  display: flex;
-  gap: 10px;
-}
-
-.insights-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
-  margin-bottom: 30px;
-}
-
-.insight-card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.insight-card.selected {
-  border: 2px solid #4caf50;
-}
-
-.insight-card h3 {
-  margin-bottom: 15px;
-  font-size: 1em;
-}
-
-.metric {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 0.9em;
-}
-
-.metric span {
-  color: #666;
-}
-
-.chart-section {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.chart-section h3 {
-  margin-bottom: 15px;
-}
-
-.loading {
-  text-align: center;
-  padding: 50px;
-  color: #666;
-}
-
-/* --- Phase 1 / Bloc A: habit card extras -------------------------------- */
-
-.habit-card {
-  align-items: flex-start;
-  gap: 15px;
+.habit-card.done .habit-info h3 {
+  color: var(--ink-50);
 }
 
 .habit-info {
@@ -263,129 +377,315 @@ button {
   min-width: 0;
 }
 
-.habit-actions {
-  flex-wrap: wrap;
-  justify-content: flex-end;
+.habit-info h3 {
+  margin-bottom: var(--space-1);
+  font-size: 15px;
 }
 
-.btn-edit {
-  background: #f0f0f0;
-  color: #555;
-  font-size: 0.9em;
+.if-then {
+  color: var(--ink-50);
+  font-size: 13px;
+  line-height: 1.45;
 }
+
+.streak {
+  display: inline-block;
+  margin-top: var(--space-2);
+  color: var(--warning);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.habit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* --- Mini calendar ------------------------------------------------------------ */
 
 .mini-calendar {
   display: grid;
   grid-template-columns: repeat(15, 1fr);
-  gap: 4px;
-  margin-top: 10px;
+  gap: 3px;
+  margin-top: var(--space-3);
   max-width: 320px;
 }
 
 .mini-calendar .day {
   width: 14px;
   height: 14px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   display: block;
 }
 
 .mini-calendar .day.on {
-  background: #4caf50;
+  background: var(--success);
 }
 
 .mini-calendar .day.off {
-  background: #e0e0e0;
+  background: var(--hairline);
 }
 
+/* --- Automaticity prompt & badge ------------------------------------------------ */
+
 .automaticity {
-  margin-top: 12px;
+  margin-top: var(--space-3);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
   align-items: flex-start;
+  padding: var(--space-3);
+  background: var(--surface-2);
+  border: var(--border-hairline);
+  border-radius: var(--radius-md);
 }
 
 .auto-label {
-  font-size: 0.85em;
-  color: #555;
+  font-size: 12.5px;
+  font-weight: var(--weight-medium);
+  color: var(--ink-50);
 }
 
 .auto-scale {
   display: flex;
-  gap: 4px;
+  gap: var(--space-1);
   flex-wrap: wrap;
 }
 
 .auto-btn {
-  padding: 6px 9px;
-  font-size: 0.85em;
-  background: #eef7ee;
-  color: #2e7d32;
-  border: 1px solid #c8e6c9;
-  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  background: transparent;
+  color: var(--ink-70);
+  border: var(--border-hairline);
+  border-radius: var(--radius-sm);
 }
 
 .auto-btn:hover {
-  background: #4caf50;
-  color: #fff;
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary-hover);
 }
 
 .auto-badge {
   display: inline-block;
-  margin-top: 8px;
-  font-size: 0.8em;
-  color: #2e7d32;
-  background: #eef7ee;
-  padding: 3px 8px;
-  border-radius: 999px;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--primary-hover);
+  background: var(--primary-soft);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
 }
 
-/* --- Edit habit form ----------------------------------------------------- */
+/* --- Wizard / steps ------------------------------------------------------------- */
+
+.wizard {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.wizard h2 {
+  font-size: 26px;
+  margin-bottom: var(--space-2);
+}
+
+.science {
+  color: var(--ink-50);
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin-bottom: var(--space-5);
+}
+
+.steps-indicator {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.steps-indicator span {
+  color: var(--ink-30);
+  font-size: 10px;
+  transition: color var(--duration-base) var(--ease-out);
+}
+
+.steps-indicator span.active {
+  color: var(--primary);
+}
+
+.wizard h3 {
+  font-size: 17px;
+  margin-bottom: var(--space-2);
+}
+
+.wizard p {
+  color: var(--ink-50);
+  margin-bottom: var(--space-4);
+}
+
+.wizard input {
+  width: 100%;
+  margin-bottom: var(--space-4);
+}
+
+.wizard-nav {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* --- Insights --------------------------------------------------------------------- */
+
+.insights h2 {
+  font-size: 24px;
+  letter-spacing: var(--tracking-tighter);
+  margin-bottom: var(--space-3);
+}
+
+.insights > p {
+  margin-bottom: var(--space-5);
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.insight-card {
+  background: var(--surface-1);
+  border: var(--border-hairline);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  cursor: pointer;
+  box-shadow: var(--shadow-panel);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.insight-card:hover {
+  background: var(--surface-2);
+  border-color: var(--hairline-strong);
+}
+
+.insight-card.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.insight-card h3 {
+  margin-bottom: var(--space-3);
+  font-size: 14px;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.metric span {
+  color: var(--ink-40);
+}
+
+.metric strong {
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: var(--weight-medium);
+}
+
+/* --- Chart: accent + quiet chrome -------------------------------------------------- */
+
+.chart-section {
+  background: var(--surface-1);
+  border: var(--border-hairline);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.chart-section h3 {
+  margin-bottom: var(--space-4);
+  font-size: 14px;
+}
+
+.chart-section .recharts-bar-rectangle path {
+  fill: var(--primary);
+}
+
+.chart-section .recharts-cartesian-grid line {
+  stroke: var(--hairline);
+}
+
+.chart-section .recharts-cartesian-axis-tick text {
+  fill: var(--ink-40);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* --- Edit form ------------------------------------------------------------------------ */
 
 .edit-habit {
-  max-width: 500px;
+  max-width: 520px;
   margin: 0 auto;
 }
 
 .edit-habit h2 {
-  margin-bottom: 10px;
+  font-size: 26px;
+  margin-bottom: var(--space-5);
 }
 
 .edit-habit label {
   display: block;
-  margin-bottom: 12px;
-  font-size: 0.9em;
-  color: #555;
+  margin-bottom: var(--space-3);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  color: var(--ink-50);
 }
 
 .edit-habit input {
   display: block;
   width: 100%;
-  margin-top: 5px;
+  margin-top: 6px;
 }
 
 .edit-habit .wizard-nav {
-  margin-top: 20px;
+  margin-top: var(--space-5);
 }
 
-/* --- Phase 1 / Bloc C: language switcher --------------------------------- */
+/* --- States ---------------------------------------------------------------------------- */
 
-.lang-switcher {
-  display: flex;
-  gap: 4px;
+.loading {
+  text-align: center;
+  padding: var(--space-8);
+  color: var(--ink-40);
+  font-size: 13.5px;
 }
 
-.lang-switcher button {
-  padding: 5px 9px;
-  font-size: 0.8em;
-  border: 1px solid #ddd;
-  background: #fff;
-  color: #666;
-  border-radius: 6px;
-}
+/* --- Responsive ---------------------------------------------------------------------------- */
 
-.lang-switcher button.active {
-  background: #4caf50;
-  border-color: #4caf50;
-  color: #fff;
+@media (max-width: 560px) {
+  .habit-card {
+    flex-direction: column;
+  }
+
+  .habit-actions {
+    justify-content: flex-start;
+  }
+
+  .mini-calendar {
+    max-width: 100%;
+  }
+
+  .auth {
+    margin-top: var(--space-8);
+  }
 }

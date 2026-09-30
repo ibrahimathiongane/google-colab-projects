@@ -1,0 +1,84 @@
+/* ============================================================================
+   Design tokens — Linear-inspired, dark-first.
+   Single source of truth for the app AND the future landing page.
+   See frontend/DESIGN.md for the rules of use.
+   ========================================================================== */
+
+:root {
+  /* --- Canvas & surfaces (achromatic core) ------------------------------ */
+  --canvas: #08090a;          /* app background            */
+  --canvas-marketing: #010102; /* landing page "marketing black" */
+  --surface-1: #0f1011;       /* cards, panels, inputs      */
+  --surface-2: #141516;       /* hover raise                */
+  --surface-3: #1c1d1f;       /* active / pressed           */
+
+  /* --- Hairlines: separation without heavy shadows ---------------------- */
+  --hairline: #23252a;
+  --hairline-strong: rgba(255, 255, 255, 0.08);
+  --border-hairline: 1px solid var(--hairline);
+
+  /* --- Ink: hierarchy by opacity, never by new greys ------------------- */
+  --ink: #f7f8f8;
+  --ink-70: rgba(247, 248, 248, 0.7);
+  --ink-50: rgba(247, 248, 248, 0.5);
+  --ink-40: rgba(247, 248, 248, 0.4);
+  --ink-30: rgba(247, 248, 248, 0.3);
+
+  /* --- The one accent: CTA, focus ring, brand mark ---------------------- */
+  --primary: #5e6ad2;
+  --primary-hover: #828fff;
+  --primary-contrast: #ffffff;
+  --primary-soft: rgba(94, 106, 210, 0.16);   /* tinted backgrounds */
+  --primary-ring: rgba(94, 106, 210, 0.45);   /* focus rings        */
+
+  /* --- Indicator lights (rare, semantic only — like status LEDs) -------- */
+  --success: #4cb782;
+  --success-soft: rgba(76, 183, 130, 0.14);
+  --danger: #eb5757;
+  --danger-soft: rgba(235, 87, 87, 0.14);
+  --warning: #f2c94c;          /* streaks / attention */
+
+  /* --- Typography ------------------------------------------------------- */
+  --font-sans: "Inter Variable", "SF Pro Display", -apple-system,
+    BlinkMacSystemFont, system-ui, "Segoe UI", sans-serif;
+  --font-mono: "Berkeley Mono", ui-monospace, "SF Mono", Menlo,
+    "Cascadia Mono", "Roboto Mono", monospace;
+
+  /* Negative tracking: the compact, architectural feel of big titles. */
+  --tracking-tighter: -0.022em;
+  --tracking-tight: -0.014em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;     /* rare: labels / eyebrows */
+
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 590;      /* Inter variable: never shouty bold */
+  --weight-bold: 700;
+
+  /* --- Spacing: 4px unit, 8px main step --------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;             /* landing sections breathe at 96px */
+
+  /* --- Radii: nested formula, no visual distortion ---------------------- */
+  --radius-sm: 2px;            /* badges, indicators   */
+  --radius-md: 6px;            /* buttons, inputs      */
+  --radius-lg: 12px;           /* cards, panels        */
+
+  /* --- Elevation (minimal: hairlines do the work) ----------------------- */
+  --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  /* --- Motion: instant but fluid, native-app feel ----------------------- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+}

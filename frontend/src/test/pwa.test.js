@@ -83,7 +83,7 @@ describe("index.html PWA wiring", () => {
   it("links the manifest, the icons and the theme color", () => {
     expect(html).toContain('rel="manifest" href="/manifest.json"');
     expect(html).toContain('rel="apple-touch-icon" href="/apple-touch-icon.png"');
-    expect(html).toContain('name="theme-color" content="#4caf50"');
+    expect(html).toContain('name="theme-color" content="#08090a"');
     expect(html).toContain('name="viewport"');
   });
 });

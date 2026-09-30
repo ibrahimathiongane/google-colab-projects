@@ -5,7 +5,7 @@
  *  - navigations are network-first with the app shell as offline fallback;
  *  - hashed Vite assets are cache-first (their URL changes on every build).
  */
-const VERSION = "v1";
+const VERSION = "v2";
 const SHELL_CACHE = `habits-shell-${VERSION}`;
 const RUNTIME_CACHE = `habits-runtime-${VERSION}`;
 const SHELL_URLS = [

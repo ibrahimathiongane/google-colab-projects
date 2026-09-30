@@ -38,7 +38,7 @@ describe("dictionaries", () => {
   it("pluralizes in both languages", async () => {
     await i18n.changeLanguage("en");
     expect(i18n.t("habit.streak", { count: 1 })).toBe("1 day streak");
-    expect(i18n.t("habit.streak", { count: 4 })).toBe("4 day streaks");
+    expect(i18n.t("habit.streak", { count: 4 })).toBe("4 day streak");
 
     await i18n.changeLanguage("fr");
     expect(i18n.t("habit.streak", { count: 1 })).toBe("1 jour de série");

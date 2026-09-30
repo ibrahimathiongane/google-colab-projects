@@ -54,7 +54,7 @@
         "placeholder": "ex. : après mon café"
       },
       "behavior": {
-        "title": "Définissez un comportement minuscule",
+        "title": "Définissez un micro-comportement",
         "desc": "Si petit que cela prend moins de 30 secondes. Commencez ridiculement petit.",
         "placeholder": "ex. : faire 2 pompes"
       },
@@ -77,7 +77,7 @@
     "fields": {
       "name": "Nom",
       "anchor": "Ancre",
-      "tiny_behavior": "Comportement minuscule",
+      "tiny_behavior": "Micro-comportement",
       "celebration": "Célébration",
       "cue_time": "Heure"
     },

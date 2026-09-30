@@ -52,7 +52,7 @@ export default function Login({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
         />
         {error && <p className="error">{error}</p>}
-        <button type="submit">
+        <button type="submit" className="btn-primary">
           {isRegister ? t("login.createAccount") : t("login.login")}
         </button>
       </form>

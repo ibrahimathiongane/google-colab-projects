@@ -4,6 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./i18n";
 import { registerServiceWorker } from "./pwa";
+import "@fontsource-variable/inter";
+import "./tokens.css";
 import "./styles.css";
 
 registerServiceWorker();
