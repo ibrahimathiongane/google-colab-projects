@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { api } from "../api";
+import { translateApiError } from "../i18n/apiErrors";
 
 export default function Login({ onLogin }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -20,46 +23,42 @@ export default function Login({ onLogin }) {
         refresh_token: res.refresh_token,
       });
     } catch (err) {
-      setError(err.message);
+      setError(translateApiError(t, err.message));
     }
   };
 
   return (
     <div className="auth">
       <h1>🌱 Habit Tracker</h1>
-      <p className="tagline">
-        Build habits that stick — the science-based way
-      </p>
+      <p className="tagline">{t("login.tagline")}</p>
       <form onSubmit={submit}>
         {isRegister && (
           <input
-            placeholder="Name"
+            placeholder={t("login.name")}
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         )}
         <input
-          placeholder="Email"
+          placeholder={t("login.email")}
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          placeholder="Password"
+          placeholder={t("login.password")}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         {error && <p className="error">{error}</p>}
         <button type="submit">
-          {isRegister ? "Create account" : "Login"}
+          {isRegister ? t("login.createAccount") : t("login.login")}
         </button>
       </form>
       <p>
         <button className="link" onClick={() => setIsRegister(!isRegister)}>
-          {isRegister
-            ? "Already have an account? Login"
-            : "Need an account? Register"}
+          {isRegister ? t("login.haveAccount") : t("login.needAccount")}
         </button>
       </p>
     </div>

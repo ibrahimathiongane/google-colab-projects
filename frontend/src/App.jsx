@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { api, setTokens } from "./api";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NewHabit from "./pages/NewHabit";
@@ -8,6 +10,7 @@ import Insights from "./pages/Insights";
 import EditHabit from "./pages/EditHabit";
 
 export default function App() {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -35,17 +38,18 @@ export default function App() {
     navigate("/login");
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <div className="loading">{t("app.loading")}</div>;
 
   return (
     <div className="app">
       {user && (
         <nav className="nav">
           <span className="logo">🌱 Habit Tracker</span>
-          <Link to="/">Dashboard</Link>
-          <Link to="/new">New Habit</Link>
-          <Link to="/insights">Insights</Link>
-          <button onClick={logout}>Logout</button>
+          <Link to="/">{t("nav.dashboard")}</Link>
+          <Link to="/new">{t("nav.newHabit")}</Link>
+          <Link to="/insights">{t("nav.insights")}</Link>
+          <LanguageSwitcher />
+          <button onClick={logout}>{t("nav.logout")}</button>
         </nav>
       )}
       <Routes>

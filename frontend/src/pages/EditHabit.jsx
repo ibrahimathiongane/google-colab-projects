@@ -1,24 +1,13 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../api";
+import { translateApiError } from "../i18n/apiErrors";
 
-const FIELDS = [
-  { key: "name", label: "Name", placeholder: "e.g., Drink water" },
-  { key: "anchor", label: "Anchor", placeholder: "e.g., pour my morning coffee" },
-  {
-    key: "tiny_behavior",
-    label: "Tiny behavior",
-    placeholder: "e.g., drink one glass",
-  },
-  {
-    key: "celebration",
-    label: "Celebration",
-    placeholder: "e.g., smile and say yes",
-  },
-  { key: "cue_time", label: "Cue time", placeholder: "08:00 (optional)" },
-];
+const FIELDS = ["name", "anchor", "tiny_behavior", "celebration", "cue_time"];
 
 export default function EditHabit() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [form, setForm] = useState(null);
@@ -31,7 +20,7 @@ export default function EditHabit() {
       .then((habits) => {
         const found = habits.find((h) => h.id === Number(id));
         if (!found) {
-          setError("Habit not found");
+          setError(t("edit.notFound"));
         } else {
           setForm({
             name: found.name,
@@ -42,8 +31,8 @@ export default function EditHabit() {
           });
         }
       })
-      .catch((err) => setError(err.message));
-  }, [id]);
+      .catch((err) => setError(translateApiError(t, err.message)));
+  }, [id, t]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -53,7 +42,7 @@ export default function EditHabit() {
       await api.updateHabit(Number(id), form);
       navigate("/");
     } catch (err) {
-      setError(err.message);
+      setError(translateApiError(t, err.message));
       setSaving(false);
     }
   };
@@ -61,40 +50,36 @@ export default function EditHabit() {
   if (!form) {
     return (
       <div className="edit-habit">
-        <h2>Edit habit</h2>
+        <h2>{t("edit.title")}</h2>
         {error && <p className="error">{error}</p>}
-        {!error && <p>Loading…</p>}
-        {error && <a href="/">← Back to dashboard</a>}
+        {!error && <p>{t("edit.loading")}</p>}
+        {error && <a href="/">{t("edit.back")}</a>}
       </div>
     );
   }
 
   return (
     <div className="edit-habit">
-      <h2>Edit habit</h2>
-      <p className="science">
-        The if-then sentence is regenerated from your answers.
-      </p>
+      <h2>{t("edit.title")}</h2>
+      <p className="science">{t("edit.science")}</p>
       <form onSubmit={submit}>
-        {FIELDS.map((f) => (
-          <label key={f.key}>
-            {f.label}
+        {FIELDS.map((key) => (
+          <label key={key}>
+            {t(`edit.fields.${key}`)}
             <input
-              value={form[f.key]}
-              placeholder={f.placeholder}
-              onChange={(e) =>
-                setForm({ ...form, [f.key]: e.target.value })
-              }
+              value={form[key]}
+              placeholder={t(`edit.placeholders.${key}`)}
+              onChange={(e) => setForm({ ...form, [key]: e.target.value })}
             />
           </label>
         ))}
         {error && <p className="error">{error}</p>}
         <div className="wizard-nav">
           <button type="button" onClick={() => navigate("/")}>
-            Cancel
+            {t("edit.cancel")}
           </button>
           <button type="submit" className="btn-primary" disabled={saving}>
-            {saving ? "Saving…" : "Save"}
+            {saving ? t("edit.saving") : t("edit.save")}
           </button>
         </div>
       </form>

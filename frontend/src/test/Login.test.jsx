@@ -1,6 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import i18n from "../i18n";
 import Login from "../pages/Login";
 
 vi.mock("../api", () => ({
@@ -60,7 +61,7 @@ describe("Login", () => {
     expect(onLogin).toHaveBeenCalled();
   });
 
-  it("shows the API error instead of failing silently", async () => {
+  it("shows the translated API error instead of failing silently", async () => {
     api.login.mockRejectedValue(new Error("Invalid credentials"));
     const user = userEvent.setup();
     render(<Login onLogin={vi.fn()} />);
@@ -69,8 +70,34 @@ describe("Login", () => {
     await user.type(screen.getByPlaceholderText("Password"), "wrong-pass");
     await user.click(screen.getByRole("button", { name: "Login" }));
 
+    // Raw backend message → localized string.
     expect(
-      await screen.findByText("Invalid credentials"),
+      await screen.findByText("Incorrect email or password."),
+    ).toBeInTheDocument();
+  });
+});
+
+describe("Login in French", () => {
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
+  });
+
+  it("renders every label in French and translates backend errors", async () => {
+    api.login.mockRejectedValue(new Error("Invalid credentials"));
+    await i18n.changeLanguage("fr");
+    const user = userEvent.setup();
+    render(<Login onLogin={vi.fn()} />);
+
+    expect(screen.getByPlaceholderText("Courriel")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Mot de passe")).toBeInTheDocument();
+    expect(screen.getByText(/méthode scientifique/)).toBeInTheDocument();
+
+    await user.type(screen.getByPlaceholderText("Courriel"), "a@b.co");
+    await user.type(screen.getByPlaceholderText("Mot de passe"), "nope");
+    await user.click(screen.getByRole("button", { name: "Se connecter" }));
+
+    expect(
+      await screen.findByText("Courriel ou mot de passe incorrect."),
     ).toBeInTheDocument();
   });
 });

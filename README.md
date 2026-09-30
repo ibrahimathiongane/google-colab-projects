@@ -77,7 +77,9 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
 - Login/register are rate-limited (sliding window per email and per IP).
 - Containers run as a non-root user; images are pinned.
 
-## PWA (Phase 1)
+## Phase 1 features
+
+### PWA
 
 - Installable on iOS/Android/desktop: `frontend/public/manifest.json` +
   icons (192/512/maskable/apple-touch).
@@ -86,6 +88,16 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
   **`/api/*` is never cached.**
 - Registered only in production builds (`frontend/src/pwa.js`); `sw.js` and
   `manifest.json` are served with `Cache-Control: no-cache` by nginx.
+
+### i18n (EN + FR)
+
+- i18next dictionaries in `frontend/src/i18n/{en,fr}.json` — a test enforces
+  that both locales stay key-for-key identical.
+- Language switcher in the nav, persisted in `localStorage.lang`, applied to
+  `<html lang>` and `document.title`.
+- Backend error messages are mapped to localized strings
+  (`frontend/src/i18n/apiErrors.js`); unknown messages pass through as-is.
+- Dates are formatted with the active locale (`en-US` / `fr-FR`).
 
 ## Tests
 

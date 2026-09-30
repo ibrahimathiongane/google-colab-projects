@@ -1,0 +1,113 @@
+{
+  "app": {
+    "title": "Habit Tracker — Le suivi basé sur la science",
+    "loading": "Chargement…"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "newHabit": "Nouvelle habitude",
+    "insights": "Analyses",
+    "logout": "Déconnexion",
+    "language": "Langue"
+  },
+  "login": {
+    "tagline": "Des habitudes qui tiennent — la méthode scientifique",
+    "name": "Nom",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "login": "Se connecter",
+    "createAccount": "Créer un compte",
+    "needAccount": "Pas de compte ? S'inscrire",
+    "haveAccount": "Déjà un compte ? Se connecter"
+  },
+  "dashboard": {
+    "today": "Aujourd'hui —",
+    "noHabits": "Aucune habitude pour l'instant.",
+    "createFirst": "Créer votre première micro-habitude →"
+  },
+  "habit": {
+    "done": "✓ Fait",
+    "undo": "Annuler",
+    "edit": "✎ Modifier",
+    "streak_one": "{{count}} jour de série",
+    "streak_other": "{{count}} jours de série",
+    "deleteConfirm": "Supprimer « {{name}} » ? Son historique reste dans les Analyses.",
+    "automaticity": "automatisme {{value}}/10",
+    "howAutomatic": "C'était automatique à quel point ?",
+    "skip": "Passer",
+    "calendarLabel": "{{count}} derniers jours : {{done}} faits",
+    "dayDone": "{{date}} — fait",
+    "dayMissed": "{{date}} — manqué"
+  },
+  "wizard": {
+    "title": "Concevoir une micro-habitude",
+    "science": "Inspiré de la méthode Tiny Habits de BJ Fogg — petit comportement + ancre + célébration = changement durable.",
+    "namePlaceholder": "Nom court (ex. : Boire de l'eau)",
+    "cueTime": "Heure souhaitée (facultatif, ex. : 08:00)",
+    "back": "Retour",
+    "next": "Suivant",
+    "create": "Créer l'habitude",
+    "steps": {
+      "anchor": {
+        "title": "Choisissez votre ancre",
+        "desc": "Une routine que vous faites déjà chaque jour. C'est votre déclencheur.",
+        "placeholder": "ex. : après mon café"
+      },
+      "behavior": {
+        "title": "Définissez un comportement minuscule",
+        "desc": "Si petit que cela prend moins de 30 secondes. Commencez ridiculement petit.",
+        "placeholder": "ex. : faire 2 pompes"
+      },
+      "celebration": {
+        "title": "Choisissez une célébration",
+        "desc": "L'émotion positive immédiate ancre l'habitude dans votre cerveau. Amusez-vous !",
+        "placeholder": "ex. : sourire et se dire ouais"
+      }
+    }
+  },
+  "edit": {
+    "title": "Modifier l'habitude",
+    "science": "La phrase si-alors est régénérée à partir de vos réponses.",
+    "notFound": "Habitude introuvable",
+    "loading": "Chargement…",
+    "back": "← Retour au tableau de bord",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "fields": {
+      "name": "Nom",
+      "anchor": "Ancre",
+      "tiny_behavior": "Comportement minuscule",
+      "celebration": "Célébration",
+      "cue_time": "Heure"
+    },
+    "placeholders": {
+      "name": "ex. : Boire de l'eau",
+      "anchor": "ex. : après mon café",
+      "tiny_behavior": "ex. : boire un verre",
+      "celebration": "ex. : sourire et se dire ouais",
+      "cue_time": "08:00 (facultatif)"
+    }
+  },
+  "insights": {
+    "title": "Analyses",
+    "science": "La science des habitudes : la régularité bat l'intensité. Suivez votre capacité de reprise, pas seulement les séries.",
+    "empty": "Pas encore de données. Commencez à cocher !",
+    "successRate": "Taux de réussite",
+    "habitStrength": "Force de l'habitude",
+    "bestTime": "Meilleur moment",
+    "recovery": "Capacité de reprise",
+    "consistency": "Régularité — 30 derniers jours"
+  },
+  "errors": {
+    "invalidCredentials": "Courriel ou mot de passe incorrect.",
+    "rateLimited": "Trop de tentatives. Réessayez dans quelques minutes.",
+    "emailTaken": "Ce courriel est déjà inscrit.",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
+    "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
+    "notFound": "Introuvable.",
+    "server": "Service indisponible. Veuillez réessayer.",
+    "network": "Erreur réseau. Vérifiez votre connexion.",
+    "unexpected": "Une erreur est survenue."
+  }
+}

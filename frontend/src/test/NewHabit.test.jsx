@@ -59,7 +59,7 @@ describe("NewHabit wizard", () => {
     await user.click(screen.getByRole("button", { name: "Next" }));
 
     await user.type(
-      screen.getByPlaceholderText(/say 'I'm strong/),
+      screen.getByPlaceholderText(/smile and say yes/),
       "smile",
     );
     await user.click(screen.getByRole("button", { name: "Create Habit" }));

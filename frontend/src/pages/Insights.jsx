@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   BarChart,
   Bar,
@@ -9,7 +10,21 @@ import {
 } from "recharts";
 import { api } from "../api";
 
+const METRICS = [
+  { key: "successRate", value: (i) => `${i.success_rate}%` },
+  { key: "habitStrength", value: (i) => `${i.habit_strength}/100` },
+  {
+    key: "bestTime",
+    value: (i) => (i.best_hour !== null ? `${i.best_hour}:00` : "—"),
+  },
+  {
+    key: "recovery",
+    value: (i) => (i.avg_recovery_days ? `${i.avg_recovery_days}d` : "—"),
+  },
+];
+
 export default function Insights() {
+  const { t } = useTranslation();
   const [insights, setInsights] = useState([]);
   const [selected, setSelected] = useState(null);
   const [range, setRange] = useState([]);
@@ -38,12 +53,9 @@ export default function Insights() {
 
   return (
     <div className="insights">
-      <h2>Insights</h2>
-      <p className="science">
-        Habit science: consistency beats intensity. Track your recovery rate,
-        not just streaks.
-      </p>
-      {insights.length === 0 && <p>No data yet. Start checking in!</p>}
+      <h2>{t("insights.title")}</h2>
+      <p className="science">{t("insights.science")}</p>
+      {insights.length === 0 && <p>{t("insights.empty")}</p>}
       <div className="insights-grid">
         {insights.map((i) => (
           <div
@@ -52,32 +64,18 @@ export default function Insights() {
             onClick={() => select(i.habit_id)}
           >
             <h3>{i.name}</h3>
-            <div className="metric">
-              <span>Success rate</span>
-              <strong>{i.success_rate}%</strong>
-            </div>
-            <div className="metric">
-              <span>Habit strength</span>
-              <strong>{i.habit_strength}/100</strong>
-            </div>
-            <div className="metric">
-              <span>Best time</span>
-              <strong>
-                {i.best_hour !== null ? `${i.best_hour}:00` : "—"}
-              </strong>
-            </div>
-            <div className="metric">
-              <span>Recovery rate</span>
-              <strong>
-                {i.avg_recovery_days ? `${i.avg_recovery_days}d` : "—"}
-              </strong>
-            </div>
+            {METRICS.map((m) => (
+              <div className="metric" key={m.key}>
+                <span>{t(`insights.${m.key}`)}</span>
+                <strong>{m.value(i)}</strong>
+              </div>
+            ))}
           </div>
         ))}
       </div>
       {habit && (
         <div className="chart-section">
-          <h3>Consistency — last 30 days</h3>
+          <h3>{t("insights.consistency")}</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData}>
               <XAxis dataKey="date" />

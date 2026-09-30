@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { api, localDate } from "../api";
 import HabitCard from "../components/HabitCard";
 
 export default function Dashboard() {
+  const { t, i18n } = useTranslation();
   const [habits, setHabits] = useState([]);
   const [checkins, setCheckins] = useState({});
   const [streaks, setStreaks] = useState([]);
@@ -42,20 +44,21 @@ export default function Dashboard() {
     load();
   };
 
+  const headingDate = new Date().toLocaleDateString(i18n.language, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <div className="dashboard">
       <h2>
-        Today —{" "}
-        {new Date().toLocaleDateString("en-US", {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-        })}
+        {t("dashboard.today")} {headingDate}
       </h2>
       {habits.length === 0 && (
         <p>
-          No habits yet.{" "}
-          <a href="/new">Create your first tiny habit →</a>
+          {t("dashboard.noHabits")}{" "}
+          <a href="/new">{t("dashboard.createFirst")}</a>
         </p>
       )}
       {habits.map((h) => (

@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import i18n from "../i18n";
 import Dashboard from "../pages/Dashboard";
 
 function iso(d) {
@@ -136,5 +137,25 @@ describe("Dashboard", () => {
     renderDashboard();
 
     expect(await screen.findByText(/No habits yet/)).toBeInTheDocument();
+  });
+});
+
+describe("Dashboard in French", () => {
+  afterEach(async () => {
+    await i18n.changeLanguage("en");
+  });
+
+  it("localizes the heading, the streak and the self-report prompt", async () => {
+    await i18n.changeLanguage("fr");
+    renderDashboard();
+
+    expect(await screen.findByText(/Aujourd'hui/)).toBeInTheDocument();
+    expect(screen.getByText(/4 jours de série/)).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "✓ Fait" }));
+    expect(
+      await screen.findByText("C'était automatique à quel point ?"),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Passer" })).toBeInTheDocument();
   });
 });

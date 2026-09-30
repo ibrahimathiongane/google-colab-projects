@@ -1,0 +1,113 @@
+{
+  "app": {
+    "title": "Habit Tracker — Science-Based",
+    "loading": "Loading…"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "newHabit": "New Habit",
+    "insights": "Insights",
+    "logout": "Logout",
+    "language": "Language"
+  },
+  "login": {
+    "tagline": "Build habits that stick — the science-based way",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "login": "Login",
+    "createAccount": "Create account",
+    "needAccount": "Need an account? Register",
+    "haveAccount": "Already have an account? Login"
+  },
+  "dashboard": {
+    "today": "Today —",
+    "noHabits": "No habits yet.",
+    "createFirst": "Create your first tiny habit →"
+  },
+  "habit": {
+    "done": "✓ Done",
+    "undo": "Undo",
+    "edit": "✎ Edit",
+    "streak_one": "{{count}} day streak",
+    "streak_other": "{{count}} day streaks",
+    "deleteConfirm": "Delete \"{{name}}\"? Its history stays in Insights.",
+    "automaticity": "automaticity {{value}}/10",
+    "howAutomatic": "How automatic did this feel?",
+    "skip": "Skip",
+    "calendarLabel": "Last {{count}} days: {{done}} done",
+    "dayDone": "{{date}} — done",
+    "dayMissed": "{{date}} — missed"
+  },
+  "wizard": {
+    "title": "Design a Tiny Habit",
+    "science": "Based on BJ Fogg's Tiny Habits method — small behaviors + anchors + celebration = lasting change.",
+    "namePlaceholder": "Short name (e.g., Drink water)",
+    "cueTime": "Preferred time (optional, e.g., 08:00)",
+    "back": "Back",
+    "next": "Next",
+    "create": "Create Habit",
+    "steps": {
+      "anchor": {
+        "title": "Choose your anchor",
+        "desc": "An existing routine you already do every day. This is your trigger.",
+        "placeholder": "e.g., pour my morning coffee"
+      },
+      "behavior": {
+        "title": "Define a tiny behavior",
+        "desc": "Something so small it takes less than 30 seconds. Start absurdly small.",
+        "placeholder": "e.g., do 2 push-ups"
+      },
+      "celebration": {
+        "title": "Pick a celebration",
+        "desc": "Immediate positive emotion wires the habit into your brain. Make it fun!",
+        "placeholder": "e.g., smile and say yes"
+      }
+    }
+  },
+  "edit": {
+    "title": "Edit habit",
+    "science": "The if-then sentence is regenerated from your answers.",
+    "notFound": "Habit not found",
+    "loading": "Loading…",
+    "back": "← Back to dashboard",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving…",
+    "fields": {
+      "name": "Name",
+      "anchor": "Anchor",
+      "tiny_behavior": "Tiny behavior",
+      "celebration": "Celebration",
+      "cue_time": "Cue time"
+    },
+    "placeholders": {
+      "name": "e.g., Drink water",
+      "anchor": "e.g., pour my morning coffee",
+      "tiny_behavior": "e.g., drink one glass",
+      "celebration": "e.g., smile and say yes",
+      "cue_time": "08:00 (optional)"
+    }
+  },
+  "insights": {
+    "title": "Insights",
+    "science": "Habit science: consistency beats intensity. Track your recovery rate, not just streaks.",
+    "empty": "No data yet. Start checking in!",
+    "successRate": "Success rate",
+    "habitStrength": "Habit strength",
+    "bestTime": "Best time",
+    "recovery": "Recovery rate",
+    "consistency": "Consistency — last 30 days"
+  },
+  "errors": {
+    "invalidCredentials": "Incorrect email or password.",
+    "rateLimited": "Too many attempts. Try again in a few minutes.",
+    "emailTaken": "This email is already registered.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "sessionExpired": "Your session expired. Please log in again.",
+    "notFound": "Not found.",
+    "server": "Service unavailable. Please try again.",
+    "network": "Network error. Check your connection.",
+    "unexpected": "Something went wrong."
+  }
+}
