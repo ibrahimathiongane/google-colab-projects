@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { api } from "../api";
+import { api, localDate } from "../api";
 
-export default function Dashboard({ user }) {
+export default function Dashboard() {
   const [habits, setHabits] = useState([]);
   const [checkins, setCheckins] = useState({});
   const [streaks, setStreaks] = useState([]);
-  const today = new Date().toISOString().split("T")[0];
+  const today = localDate();
 
   const load = async () => {
     const [h, c, s] = await Promise.all([
@@ -57,7 +57,7 @@ export default function Dashboard({ user }) {
           <div key={h.id} className={`habit-card ${c?.completed ? "done" : ""}`}>
             <div className="habit-info">
               <h3>{h.name}</h3>
-              <p className="if-then">"{h.if_then}"</p>
+              <p className="if-then">&ldquo;{h.if_then}&rdquo;</p>
               {streak && (
                 <span className="streak">🔥 {streak.streak} day streak</span>
               )}

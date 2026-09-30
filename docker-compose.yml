@@ -1,76 +1,134 @@
-version: "3.9"
 services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: habit
-      POSTGRES_PASSWORD: habit
-      POSTGRES_DB: habit_tracker
+      POSTGRES_USER: ${POSTGRES_USER:-habit}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-habit}
+      POSTGRES_DB: ${POSTGRES_DB:-habit_tracker}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5433}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U habit"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-habit}"]
       interval: 5s
       timeout: 3s
       retries: 10
+    restart: unless-stopped
+
+  migrations:
+    build: ./migrations
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-habit}:${POSTGRES_PASSWORD:-habit}@postgres:5432/${POSTGRES_DB:-habit_tracker}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
 
   users:
     build: ./services/users
     environment:
-      DATABASE_URL: postgresql://habit:habit@postgres:5432/habit_tracker
-      JWT_SECRET: dev-secret-change-me
+      DATABASE_URL: postgresql://${POSTGRES_USER:-habit}:${POSTGRES_PASSWORD:-habit}@postgres:5432/${POSTGRES_DB:-habit_tracker}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set (see .env.example)}
     depends_on:
       postgres:
         condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    healthcheck: &py-healthcheck
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
 
   habits:
     build: ./services/habits
     environment:
-      DATABASE_URL: postgresql://habit:habit@postgres:5432/habit_tracker
+      DATABASE_URL: postgresql://${POSTGRES_USER:-habit}:${POSTGRES_PASSWORD:-habit}@postgres:5432/${POSTGRES_DB:-habit_tracker}
     depends_on:
       postgres:
         condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    healthcheck: *py-healthcheck
+    restart: unless-stopped
 
   tracking:
     build: ./services/tracking
     environment:
-      DATABASE_URL: postgresql://habit:habit@postgres:5432/habit_tracker
+      DATABASE_URL: postgresql://${POSTGRES_USER:-habit}:${POSTGRES_PASSWORD:-habit}@postgres:5432/${POSTGRES_DB:-habit_tracker}
     depends_on:
       postgres:
         condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    healthcheck: *py-healthcheck
+    restart: unless-stopped
 
   insights:
     build: ./services/insights
     environment:
-      DATABASE_URL: postgresql://habit:habit@postgres:5432/habit_tracker
+      DATABASE_URL: postgresql://${POSTGRES_USER:-habit}:${POSTGRES_PASSWORD:-habit}@postgres:5432/${POSTGRES_DB:-habit_tracker}
     depends_on:
       postgres:
         condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    healthcheck: *py-healthcheck
+    restart: unless-stopped
 
   gateway:
     build: ./gateway
     environment:
-      JWT_SECRET: dev-secret-change-me
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set (see .env.example)}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173}
       USERS_URL: http://users:8000
       HABITS_URL: http://habits:8000
       TRACKING_URL: http://tracking:8000
       INSIGHTS_URL: http://insights:8000
     ports:
-      - "8000:8000"
+      - "${GATEWAY_PORT:-8000}:8000"
     depends_on:
-      - users
-      - habits
-      - tracking
-      - insights
+      users:
+        condition: service_healthy
+      habits:
+        condition: service_healthy
+      tracking:
+        condition: service_healthy
+      insights:
+        condition: service_healthy
+    healthcheck: *py-healthcheck
+    restart: unless-stopped
 
   frontend:
     build: ./frontend
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT:-5173}:80"
     depends_on:
-      - gateway
+      gateway:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "-O",
+          "/dev/null",
+          "http://127.0.0.1:80/health",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 volumes:
   pgdata:

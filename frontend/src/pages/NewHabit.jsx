@@ -49,7 +49,7 @@ export default function NewHabit() {
     <div className="wizard">
       <h2>Design a Tiny Habit</h2>
       <p className="science">
-        Based on BJ Fogg's Tiny Habits method — small behaviors + anchors +
+        Based on BJ Fogg&apos;s Tiny Habits method — small behaviors + anchors +
         celebration = lasting change.
       </p>
       <div className="steps-indicator">

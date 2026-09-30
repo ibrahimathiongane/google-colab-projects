@@ -1,61 +1,114 @@
+import logging
 import os
-from datetime import date, timedelta
-
-from fastapi import FastAPI, HTTPException, Header, Depends
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from contextlib import asynccontextmanager
+from datetime import date as date_cls
+from datetime import timedelta
 
 import models
+import schemas
+from db import engine, get_db
+from fastapi import Depends, FastAPI, Header, HTTPException, Query
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
-app = FastAPI(title="Tracking Service")
-engine = create_engine(os.environ["DATABASE_URL"])
-Session = sessionmaker(bind=engine)
+logging.basicConfig(
+    level=os.environ.get("LOG_LEVEL", "INFO"),
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
+logger = logging.getLogger("tracking")
+
+# Safety bound so a corrupt row set can never spin forever.
+MAX_STREAK_DAYS = 36500
 
 
-@app.on_event("startup")
-def startup():
-    models.Base.metadata.create_all(engine)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    engine.dispose()
 
 
-def get_user_id(x_user_id: str = Header(None)):
+app = FastAPI(title="Tracking Service", lifespan=lifespan)
+
+
+def require_user_id(x_user_id: str | None = Header(None)) -> int:
     if not x_user_id:
-        raise HTTPException(401)
-    return int(x_user_id)
+        raise HTTPException(401, "Authentication required")
+    try:
+        return int(x_user_id)
+    except ValueError:
+        raise HTTPException(401, "Invalid user identity") from None
+
+
+def owned_habit(db: Session, habit_id: int, user_id: int) -> models.Habit:
+    """Return the habit only if it belongs to this user (and is active).
+
+    Prevents writing check-ins onto someone else's habit.
+    """
+    habit = (
+        db.query(models.Habit)
+        .filter_by(id=habit_id, user_id=user_id, active=True)
+        .first()
+    )
+    if not habit:
+        raise HTTPException(404, "Habit not found")
+    return habit
+
+
+@app.get("/health")
+def health(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+    except Exception:
+        raise HTTPException(503, "database unavailable") from None
+    return {"status": "ok"}
 
 
 @app.post("/checkin")
-def checkin(body: dict, user_id: int = Depends(get_user_id)):
-    db = Session()
-    d = date.fromisoformat(body["date"])
+def checkin(
+    body: schemas.CheckInIn,
+    user_id: int = Depends(require_user_id),
+    db: Session = Depends(get_db),
+):
+    owned_habit(db, body.habit_id, user_id)
+    day = date_cls.fromisoformat(body.date)
+
     existing = (
         db.query(models.CheckIn)
-        .filter_by(habit_id=body["habit_id"], date=d)
+        .filter_by(habit_id=body.habit_id, date=day)
         .first()
     )
     if existing:
-        existing.completed = body["completed"]
-        existing.automaticity = body.get("automaticity")
-        existing.note = body.get("note", "")
+        # Re-checking toggles/overwrites: one row per (habit, day).
+        existing.completed = body.completed
+        existing.automaticity = body.automaticity
+        existing.note = body.note
     else:
-        existing = models.CheckIn(
-            habit_id=body["habit_id"],
-            user_id=user_id,
-            date=d,
-            completed=body["completed"],
-            automaticity=body.get("automaticity"),
-            note=body.get("note", ""),
+        db.add(
+            models.CheckIn(
+                habit_id=body.habit_id,
+                user_id=user_id,
+                date=day,
+                completed=body.completed,
+                automaticity=body.automaticity,
+                note=body.note,
+            )
         )
-        db.add(existing)
     db.commit()
     return {"ok": True}
 
 
 @app.get("/today")
-def today(date_str: str, user_id: int = Depends(get_user_id)):
-    db = Session()
-    d = date.fromisoformat(date_str)
+def today(
+    date: str = Query(pattern=r"^\d{4}-\d{2}-\d{2}$"),
+    user_id: int = Depends(require_user_id),
+    db: Session = Depends(get_db),
+):
+    try:
+        day = date_cls.fromisoformat(date)
+    except ValueError:
+        raise HTTPException(422, "date must be a valid YYYY-MM-DD date") from None
     checkins = (
-        db.query(models.CheckIn).filter_by(user_id=user_id, date=d).all()
+        db.query(models.CheckIn).filter_by(user_id=user_id, date=day).all()
     )
     return [
         {
@@ -68,9 +121,14 @@ def today(date_str: str, user_id: int = Depends(get_user_id)):
 
 
 @app.get("/range")
-def range_(habit_id: int, days: int = 30, user_id: int = Depends(get_user_id)):
-    db = Session()
-    start = date.today() - timedelta(days=days)
+def range_(
+    habit_id: int = Query(gt=0),
+    days: int = Query(default=30, ge=1, le=366),
+    user_id: int = Depends(require_user_id),
+    db: Session = Depends(get_db),
+):
+    owned_habit(db, habit_id, user_id)
+    start = date_cls.today() - timedelta(days=days)
     checkins = (
         db.query(models.CheckIn)
         .filter_by(habit_id=habit_id, user_id=user_id)
@@ -89,8 +147,16 @@ def range_(habit_id: int, days: int = 30, user_id: int = Depends(get_user_id)):
 
 
 @app.get("/streaks")
-def streaks(user_id: int = Depends(get_user_id)):
-    db = Session()
+def streaks(
+    user_id: int = Depends(require_user_id),
+    db: Session = Depends(get_db),
+):
+    """Consecutive completed days, oldest-anchored on today.
+
+    A missing check-in *today* does not break the streak (grace): the
+    user still has the rest of the day to complete it. Only yesterday
+    and earlier count. There is no upper cap — long streaks stay honest.
+    """
     habits = (
         db.query(models.Habit).filter_by(user_id=user_id, active=True).all()
     )
@@ -104,20 +170,20 @@ def streaks(user_id: int = Depends(get_user_id)):
         )
         dates = {c.date for c in checkins}
         streak = 0
-        today = date.today()
-        for i in range(365):
-            d = today - timedelta(days=i)
-            if d in dates:
+        today = date_cls.today()
+        for i in range(MAX_STREAK_DAYS):
+            day = today - timedelta(days=i)
+            if day in dates:
                 streak += 1
             elif i == 0:
-                continue
+                continue  # today is not over yet: grace
             else:
                 break
         result.append(
             {
                 "habit_id": h.id,
                 "streak": streak,
-                "total_checkins": len(dates),
+                "completed_checkins": len(dates),
             }
         )
     return result

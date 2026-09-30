@@ -1,0 +1,9 @@
+-r gateway/requirements.txt
+-r services/users/requirements.txt
+-r services/habits/requirements.txt
+-r services/tracking/requirements.txt
+-r services/insights/requirements.txt
+-r migrations/requirements.txt
+pytest==9.1.1
+pytest-cov==7.1.0
+ruff==0.16.9

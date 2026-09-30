@@ -1,0 +1,23 @@
+line-length = 100
+target-version = "py312"
+extend-exclude = [".git", "frontend"]
+
+[lint]
+# Explicit selection (ruff's defaults grow between releases — we pin ours).
+select = [
+  "E",    # pycodestyle errors
+  "F",    # pyflakes
+  "I",    # import sorting
+  "B",    # bugbear (likely bugs)
+  "UP",   # pyupgrade
+  "C4",   # comprehensions
+  "RUF",  # ruff-specific
+]
+ignore = [
+  "E501",  # line length is enforced by `ruff format`
+  "B008",  # FastAPI Depends()/Query() in defaults is the framework idiom
+]
+
+[lint.per-file-ignores]
+# Test modules import the app under test before the app package exists.
+"**/tests/*.py" = ["E402"]

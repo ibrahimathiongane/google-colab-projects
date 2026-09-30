@@ -15,7 +15,10 @@ export default function Login({ onLogin }) {
       const res = isRegister
         ? await api.register(email, password, name)
         : await api.login(email, password);
-      onLogin(res.user || { email }, res.token);
+      onLogin(res.user || { email }, {
+        token: res.token,
+        refresh_token: res.refresh_token,
+      });
     } catch (err) {
       setError(err.message);
     }

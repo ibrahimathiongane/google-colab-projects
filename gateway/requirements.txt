@@ -1,4 +1,4 @@
-fastapi
-uvicorn
-httpx
-pyjwt
+fastapi==0.142.1
+uvicorn==0.54.0
+httpx==0.28.1
+pyjwt==2.15.1

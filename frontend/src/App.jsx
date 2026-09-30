@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
-import { api, setToken } from "./api";
+import { api, setTokens } from "./api";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NewHabit from "./pages/NewHabit";
@@ -12,18 +12,27 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const t = localStorage.getItem("token");
-    if (t) {
-      setToken(t);
+    if (localStorage.getItem("token")) {
       api
         .me()
         .then(setUser)
-        .catch(() => setToken(null))
+        .catch(() => setTokens({}))
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
   }, []);
+
+  const logout = async () => {
+    try {
+      await api.logout(); // revoke the refresh token server-side
+    } catch {
+      /* best effort: local state is cleared anyway */
+    }
+    setTokens({});
+    setUser(null);
+    navigate("/login");
+  };
 
   if (loading) return <div className="loading">Loading...</div>;
 
@@ -35,15 +44,7 @@ export default function App() {
           <Link to="/">Dashboard</Link>
           <Link to="/new">New Habit</Link>
           <Link to="/insights">Insights</Link>
-          <button
-            onClick={() => {
-              setToken(null);
-              setUser(null);
-              navigate("/login");
-            }}
-          >
-            Logout
-          </button>
+          <button onClick={logout}>Logout</button>
         </nav>
       )}
       <Routes>
@@ -51,8 +52,8 @@ export default function App() {
           path="/login"
           element={
             <Login
-              onLogin={(u, t) => {
-                setToken(t);
+              onLogin={(u, payload) => {
+                setTokens(payload);
                 setUser(u);
                 navigate("/");
               }}
@@ -61,7 +62,7 @@ export default function App() {
         />
         <Route
           path="/"
-          element={user ? <Dashboard user={user} /> : <Navigate to="/login" />}
+          element={user ? <Dashboard /> : <Navigate to="/login" />}
         />
         <Route
           path="/new"
