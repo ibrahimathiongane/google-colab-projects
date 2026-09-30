@@ -1,0 +1,252 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  background: #f5f7fa;
+  color: #333;
+}
+
+.app {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 30px;
+}
+
+.nav .logo {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-right: auto;
+}
+
+.nav a {
+  color: #4caf50;
+  text-decoration: none;
+}
+
+.nav button {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+}
+
+.auth {
+  max-width: 400px;
+  margin: 80px auto;
+  text-align: center;
+}
+
+.auth h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.tagline {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.auth form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+}
+
+.btn-done {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-undo {
+  background: #f0f0f0;
+}
+
+.btn-delete {
+  background: none;
+  color: #ccc;
+  font-size: 1.5em;
+}
+
+.error {
+  color: #e53935;
+}
+
+.link {
+  background: none;
+  color: #4caf50;
+  text-decoration: underline;
+}
+
+.habit-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.habit-card.done {
+  opacity: 0.7;
+  border-left: 4px solid #4caf50;
+}
+
+.habit-info h3 {
+  margin-bottom: 5px;
+}
+
+.if-then {
+  color: #666;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.streak {
+  color: #ff9800;
+  font-size: 0.85em;
+}
+
+.habit-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.wizard {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.wizard h2 {
+  margin-bottom: 10px;
+}
+
+.science {
+  color: #666;
+  font-size: 0.9em;
+  margin-bottom: 20px;
+}
+
+.steps-indicator {
+  margin-bottom: 20px;
+  color: #4caf50;
+}
+
+.steps-indicator span {
+  margin-right: 5px;
+  opacity: 0.3;
+}
+
+.steps-indicator span.active {
+  opacity: 1;
+}
+
+.wizard h3 {
+  margin-bottom: 5px;
+}
+
+.wizard p {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.wizard input {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.wizard-nav {
+  display: flex;
+  gap: 10px;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.insight-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.insight-card.selected {
+  border: 2px solid #4caf50;
+}
+
+.insight-card h3 {
+  margin-bottom: 15px;
+  font-size: 1em;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.9em;
+}
+
+.metric span {
+  color: #666;
+}
+
+.chart-section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chart-section h3 {
+  margin-bottom: 15px;
+}
+
+.loading {
+  text-align: center;
+  padding: 50px;
+  color: #666;
+}
