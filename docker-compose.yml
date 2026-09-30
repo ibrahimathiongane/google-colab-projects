@@ -30,6 +30,14 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-habit}:${POSTGRES_PASSWORD:-habit}@postgres:5432/${POSTGRES_DB:-habit_tracker}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set (see .env.example)}
+      # Password reset: links point back to the SPA (APP_URL); emails go
+      # through SMTP — if SMTP_HOST is empty the link is only logged.
+      APP_URL: ${APP_URL:-http://localhost:5173}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@localhost}
     depends_on:
       postgres:
         condition: service_healthy

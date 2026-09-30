@@ -8,7 +8,7 @@ Science-based habit tracker (microservices). Differentiator: behavioral science 
 
 - **Gateway** (`gateway/`): FastAPI, JWT auth, reverse proxy to services. Port 8000.
 - **Services** (`services/`): each is an independent FastAPI app with its own Dockerfile.
-  - `users/` :8001 — auth (access + rotating refresh tokens), profiles, rate limiting
+  - `users/` :8001 — auth (access + rotating refresh tokens), password reset, profiles, rate limiting
   - `habits/` :8002 — habit CRUD with scientific fields (anchor, tiny_behavior, celebration, if_then)
   - `tracking/` :8003 — check-ins, streaks, recovery
   - `insights/` :8004 — success rate, habit strength, best time
@@ -46,6 +46,7 @@ COMPOSE_FLAGS="-f docker-compose.yml -f docker-compose.prod.yml" ./scripts/backu
 - Schema changes: edit `migrations/models.py` + write an Alembic revision (`versions/`). Services never call `Base.metadata.create_all` — they open sessions via `Depends(get_db)` and expose `GET /health`.
 - JWT secret via `JWT_SECRET` env var (no default in compose; `.env.example` documents it). Refresh tokens are stored hashed and rotated on each refresh.
 - Auth routes are rate-limited (sliding window in `services/users/rate_limit.py`); other routes are not.
+- Password reset: `POST /users/forgot-password` **always returns 200** (no account enumeration) and stores only the SHA-256 of a single active token (`users.reset_token_hash`, 30 min TTL via `RESET_TTL_MINUTES`); `POST /users/reset-password` consumes the link and revokes every refresh token (logout everywhere). Both are in the gateway `PUBLIC_PATHS`. Email goes over SMTP (`SMTP_*` env in `services/users/mailer.py`) — with no `SMTP_HOST` the reset link is logged instead, so dev/tests never need credentials; links point at `{APP_URL}/reset-password`. Mail copy is English-only for now.
 - Frontend calls `/api/{service}/{path}` (vite dev proxy → gateway, nginx in prod) and auto-refreshes an expired access token once (`frontend/src/api.js`).
 - Check-in upsert: one per `(habit_id, date)` — re-checking toggles completion. Dates are `YYYY-MM-DD` in the *user's* timezone (`localDate()`).
 - Lint: `ruff.toml` at the root pins the Python rule set; ESLint flat config lives in `frontend/eslint.config.js`.

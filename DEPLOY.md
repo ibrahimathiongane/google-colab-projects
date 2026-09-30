@@ -70,6 +70,15 @@ POSTGRES_PASSWORD=$(openssl rand -hex 24)
 DOMAIN=example.com
 APP_HOST=app.example.com
 ALLOWED_ORIGINS=https://app.example.com
+
+# Email delivery for password resets (recommended — any SMTP relay;
+# STARTTLS on port 587: Resend, Postmark, Brevo, SES...).
+# With SMTP_HOST empty the reset link is only written to the service logs.
+SMTP_HOST=smtp.postmarkapp.com
+SMTP_PORT=587
+SMTP_USER=smtp-user
+SMTP_PASSWORD=smtp-password
+EMAIL_FROM=noreply@yourdomain.com
 ```
 
 Start everything:

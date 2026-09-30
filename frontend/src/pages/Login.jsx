@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { api } from "../api";
 import { translateApiError } from "../i18n/apiErrors";
@@ -51,6 +52,13 @@ export default function Login({ onLogin }) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        {!isRegister && (
+          <p>
+            <Link className="link" to="/forgot-password">
+              {t("login.forgotPassword")}
+            </Link>
+          </p>
+        )}
         {error && <p className="error">{error}</p>}
         <button type="submit" className="btn-primary">
           {isRegister ? t("login.createAccount") : t("login.login")}

@@ -110,3 +110,15 @@ def test_downstream_unreachable_is_502(client):
     )
     resp = client.post("/api/users/register", json={"email": "a@b.co"})
     assert resp.status_code == 502
+
+
+def test_password_reset_paths_are_public(client):
+    """forgot/reset must be reachable without a JWT (they mint credentials)."""
+    resp = client.post("/api/users/forgot-password", json={"email": "a@b.co"})
+    assert resp.status_code == 200
+    resp = client.post(
+        "/api/users/reset-password",
+        json={"token": "x" * 43, "password": "long-enough-1"},
+    )
+    assert resp.status_code == 200
+    assert len(client.recorder.requests) == 2

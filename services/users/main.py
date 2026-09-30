@@ -7,6 +7,7 @@ from datetime import UTC, datetime, timedelta
 
 import bcrypt
 import jwt
+import mailer
 import models
 import rate_limit
 import schemas
@@ -23,6 +24,11 @@ logger = logging.getLogger("users")
 
 ACCESS_TTL = timedelta(minutes=15)
 REFRESH_TTL = timedelta(days=30)
+RESET_TTL = timedelta(
+    minutes=int(os.environ.get("RESET_TTL_MINUTES", "30"))
+)
+# Public base URL of the SPA — where reset links point back to.
+APP_URL = os.environ.get("APP_URL", "http://localhost:5173").rstrip("/")
 
 
 @asynccontextmanager
@@ -198,3 +204,75 @@ def me(
     if not user:
         raise HTTPException(404, "User not found")
     return _user_out(user)
+
+
+@app.post("/forgot-password")
+def forgot_password(
+    body: schemas.ForgotPasswordIn,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    """Start a password reset. Always answers 200: whether the account
+    exists is never revealed (same reasoning as register)."""
+    email = body.email.lower()
+    ip = request.client.host if request.client else "unknown"
+    if not rate_limit.allow(f"forgot:{email}", limit=3) or not rate_limit.allow(
+        f"forgot-ip:{ip}", limit=10
+    ):
+        raise HTTPException(429, "Too many attempts, try again later")
+
+    user = db.query(models.User).filter_by(email=email).first()
+    if user is not None:
+        # Single active token per account: requesting again invalidates the
+        # previous link. Only its hash is stored.
+        raw = secrets.token_urlsafe(32)
+        user.reset_token_hash = _hash_token(raw)
+        user.reset_expires_at = datetime.now(UTC) + RESET_TTL
+        db.commit()
+        reset_url = f"{APP_URL}/reset-password?token={raw}"
+        try:
+            mailer.send_reset_email(
+                user.email, reset_url, ttl_minutes=int(RESET_TTL.total_seconds() // 60)
+            )
+        except Exception:
+            # Mailer trouble stays server-side: the answer must be identical
+            # for existing and unknown accounts.
+            logger.exception("reset email failed for user id=%s", user.id)
+    return {"ok": True}
+
+
+@app.post("/reset-password")
+def reset_password(
+    body: schemas.ResetPasswordIn,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    ip = request.client.host if request.client else "unknown"
+    if not rate_limit.allow(f"reset-ip:{ip}", limit=10):
+        raise HTTPException(429, "Too many attempts, try again later")
+
+    user = (
+        db.query(models.User)
+        .filter_by(reset_token_hash=_hash_token(body.token))
+        .first()
+    )
+    now = datetime.now(UTC)
+    if (
+        user is None
+        or user.reset_expires_at is None
+        or _as_utc(user.reset_expires_at) <= now
+    ):
+        raise HTTPException(400, "Invalid or expired reset link")
+
+    user.password_hash = hashpw(body.password)
+    user.reset_token_hash = None  # token consumed: cannot be reused
+    user.reset_expires_at = None
+    # Changing the password logs every device out.
+    (
+        db.query(models.RefreshToken)
+        .filter_by(user_id=user.id, revoked=False)
+        .update({"revoked": True})
+    )
+    db.commit()
+    logger.info("password reset for user id=%s", user.id)
+    return {"ok": True}

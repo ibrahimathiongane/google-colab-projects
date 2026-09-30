@@ -18,6 +18,15 @@ class RefreshIn(BaseModel):
     refresh_token: Annotated[str, Field(min_length=16, max_length=256)]
 
 
+class ForgotPasswordIn(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordIn(BaseModel):
+    token: Annotated[str, Field(min_length=16, max_length=256)]
+    password: Annotated[str, Field(min_length=8, max_length=128)]
+
+
 class UserOut(BaseModel):
     id: int
     email: EmailStr

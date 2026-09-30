@@ -94,6 +94,7 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
 - Gateway strips any client-supplied `X-User-Id` and injects it from the JWT only.
 - Refresh tokens are stored hashed, rotated on every refresh, revoked on logout.
 - Login/register are rate-limited (sliding window per email and per IP).
+- Password reset links are single-use (hashed at rest, 30 min TTL, same 200 answer for unknown accounts) and changing the password revokes every session; email goes through SMTP (`SMTP_*` env, link logged when unset).
 - Containers run as a non-root user; images are pinned.
 
 ## Phase 1 features

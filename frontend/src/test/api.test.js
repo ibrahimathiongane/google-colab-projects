@@ -102,3 +102,40 @@ describe("request helper", () => {
     ).rejects.toThrow("password: String too short");
   });
 });
+
+describe("password reset endpoints", () => {
+  it("forgotPassword posts the email to the public endpoint", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse(200, { ok: true }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { api } = await import("../api");
+    await expect(api.forgotPassword("a@b.co")).resolves.toEqual({ ok: true });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/users/forgot-password",
+      expect.objectContaining({ method: "POST" }),
+    );
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      email: "a@b.co",
+    });
+  });
+
+  it("resetPassword posts the token with the new password", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse(200, { ok: true }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { api } = await import("../api");
+    await api.resetPassword("raw-token", "brand-new-pass");
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/users/reset-password",
+      expect.objectContaining({ method: "POST" }),
+    );
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      token: "raw-token",
+      password: "brand-new-pass",
+    });
+  });
+});

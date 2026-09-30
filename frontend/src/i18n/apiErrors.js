@@ -10,6 +10,7 @@ const RULES = [
   ["Too many attempts", "rateLimited"],
   ["This email cannot be used", "emailTaken"],
   ["at least 8 characters", "passwordTooShort"],
+  ["Invalid or expired reset link", "resetLinkInvalid"],
   ["Invalid refresh token", "sessionExpired"],
   ["Authentication required", "sessionExpired"],
   ["database unavailable", "server"],

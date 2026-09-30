@@ -55,13 +55,16 @@ SERVICES = {
 }
 
 # Paths reachable without a valid JWT: (service, normalized path).
-# Login/register/refresh/logout are the only unauthenticated entries —
-# refresh and logout carry their own credential (the refresh token).
+# Login/register/refresh/logout and the password-reset flow are the only
+# unauthenticated entries — refresh and logout carry their own credential
+# (the reset endpoints are rate-limited by the users service).
 PUBLIC_PATHS = {
     ("users", "register"),
     ("users", "login"),
     ("users", "refresh"),
     ("users", "logout"),
+    ("users", "forgot-password"),
+    ("users", "reset-password"),
 }
 
 

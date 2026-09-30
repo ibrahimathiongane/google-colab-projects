@@ -18,7 +18,24 @@
     "login": "Login",
     "createAccount": "Create account",
     "needAccount": "Need an account? Register",
-    "haveAccount": "Already have an account? Login"
+    "haveAccount": "Already have an account? Login",
+    "forgotPassword": "Forgot password?"
+  },
+  "forgot": {
+    "intro": "Enter your account email and we'll send you a reset link.",
+    "submit": "Send reset link",
+    "sent": "If an account exists for this email, a reset link is on its way — check your inbox and spam folder.",
+    "backToLogin": "Back to login"
+  },
+  "reset": {
+    "title": "Choose a new password",
+    "password": "New password",
+    "confirm": "Confirm new password",
+    "submit": "Reset password",
+    "mismatch": "Passwords don't match.",
+    "missingToken": "This reset link is invalid. Request a new one.",
+    "success": "Password updated — you can sign in now.",
+    "requestNew": "Request a new link"
   },
   "dashboard": {
     "today": "Today —",
@@ -104,6 +121,7 @@
     "rateLimited": "Too many attempts. Try again in a few minutes.",
     "emailTaken": "This email is already registered.",
     "passwordTooShort": "Password must be at least 8 characters.",
+    "resetLinkInvalid": "This reset link is invalid or has expired. Request a new one.",
     "sessionExpired": "Your session expired. Please log in again.",
     "notFound": "Not found.",
     "server": "Service unavailable. Please try again.",

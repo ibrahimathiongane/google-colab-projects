@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import i18n from "../i18n";
 import Login from "../pages/Login";
@@ -23,7 +24,11 @@ describe("Login", () => {
     });
     const onLogin = vi.fn();
     const user = userEvent.setup();
-    render(<Login onLogin={onLogin} />);
+    render(
+      <MemoryRouter>
+        <Login onLogin={onLogin} />
+      </MemoryRouter>,
+    );
 
     await user.type(screen.getByPlaceholderText("Email"), "alice@example.com");
     await user.type(screen.getByPlaceholderText("Password"), "secret-pass");
@@ -45,7 +50,11 @@ describe("Login", () => {
     });
     const onLogin = vi.fn();
     const user = userEvent.setup();
-    render(<Login onLogin={onLogin} />);
+    render(
+      <MemoryRouter>
+        <Login onLogin={onLogin} />
+      </MemoryRouter>,
+    );
 
     await user.click(screen.getByRole("button", { name: "Need an account? Register" }));
     await user.type(screen.getByPlaceholderText("Name"), "Bob");
@@ -64,7 +73,11 @@ describe("Login", () => {
   it("shows the translated API error instead of failing silently", async () => {
     api.login.mockRejectedValue(new Error("Invalid credentials"));
     const user = userEvent.setup();
-    render(<Login onLogin={vi.fn()} />);
+    render(
+      <MemoryRouter>
+        <Login onLogin={vi.fn()} />
+      </MemoryRouter>,
+    );
 
     await user.type(screen.getByPlaceholderText("Email"), "alice@example.com");
     await user.type(screen.getByPlaceholderText("Password"), "wrong-pass");
@@ -86,7 +99,11 @@ describe("Login in French", () => {
     api.login.mockRejectedValue(new Error("Invalid credentials"));
     await i18n.changeLanguage("fr");
     const user = userEvent.setup();
-    render(<Login onLogin={vi.fn()} />);
+    render(
+      <MemoryRouter>
+        <Login onLogin={vi.fn()} />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByPlaceholderText("Courriel")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Mot de passe")).toBeInTheDocument();
@@ -99,5 +116,22 @@ describe("Login in French", () => {
     expect(
       await screen.findByText("Courriel ou mot de passe incorrect."),
     ).toBeInTheDocument();
+  });
+});
+
+describe("Login password recovery link", () => {
+  it("links to the reset flow (only when logging in)", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <Login onLogin={vi.fn()} />
+      </MemoryRouter>,
+    );
+    const link = screen.getByRole("link", { name: "Forgot password?" });
+    expect(link).toHaveAttribute("href", "/forgot-password");
+
+    // Hidden while registering — new accounts have no password yet.
+    await user.click(screen.getByRole("button", { name: "Need an account? Register" }));
+    expect(screen.queryByRole("link", { name: "Forgot password?" })).toBeNull();
   });
 });

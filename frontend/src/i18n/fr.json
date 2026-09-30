@@ -18,7 +18,24 @@
     "login": "Se connecter",
     "createAccount": "Créer un compte",
     "needAccount": "Pas de compte ? S'inscrire",
-    "haveAccount": "Déjà un compte ? Se connecter"
+    "haveAccount": "Déjà un compte ? Se connecter",
+    "forgotPassword": "Mot de passe oublié ?"
+  },
+  "forgot": {
+    "intro": "Saisissez l'e-mail de votre compte, nous vous enverrons un lien de réinitialisation.",
+    "submit": "Envoyer le lien",
+    "sent": "Si un compte existe avec cet e-mail, un lien est en route — vérifiez votre boîte de réception et vos spams.",
+    "backToLogin": "Retour à la connexion"
+  },
+  "reset": {
+    "title": "Choisissez un nouveau mot de passe",
+    "password": "Nouveau mot de passe",
+    "confirm": "Confirmer le mot de passe",
+    "submit": "Réinitialiser le mot de passe",
+    "mismatch": "Les mots de passe ne correspondent pas.",
+    "missingToken": "Ce lien de réinitialisation est invalide. Demandez-en un nouveau.",
+    "success": "Mot de passe mis à jour — vous pouvez vous connecter.",
+    "requestNew": "Demander un nouveau lien"
   },
   "dashboard": {
     "today": "Aujourd'hui —",
@@ -104,6 +121,7 @@
     "rateLimited": "Trop de tentatives. Réessayez dans quelques minutes.",
     "emailTaken": "Ce courriel est déjà inscrit.",
     "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
+    "resetLinkInvalid": "Ce lien de réinitialisation est invalide ou a expiré. Demandez-en un nouveau.",
     "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
     "notFound": "Introuvable.",
     "server": "Service indisponible. Veuillez réessayer.",

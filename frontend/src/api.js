@@ -86,6 +86,10 @@ export const api = {
       ? req("POST", "/users/logout", { refresh_token: refreshToken })
       : Promise.resolve(),
   me: () => req("GET", "/users/me"),
+  forgotPassword: (email) =>
+    req("POST", "/users/forgot-password", { email }),
+  resetPassword: (token, password) =>
+    req("POST", "/users/reset-password", { token, password }),
 
   listHabits: () => req("GET", "/habits/"),
   createHabit: (h) => req("POST", "/habits/", h),

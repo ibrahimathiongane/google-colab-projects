@@ -190,7 +190,11 @@ h3 {
 /* --- Buttons ---------------------------------------------------------------- */
 
 /* Buttons default to a quiet ghost — never let the user-agent style leak. */
-button {
+/* Shared box model: works for <button> and for links acting as buttons
+   (<a class="btn-primary"> on the auth pages). */
+button,
+.btn-primary,
+.btn-done {
   font-family: inherit;
   font-size: 14px;
   font-weight: var(--weight-medium);
@@ -204,6 +208,12 @@ button {
     background-color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
     color var(--duration-fast) var(--ease-out);
+}
+
+a.btn-primary,
+a.btn-done {
+  display: inline-block;
+  text-decoration: none;
 }
 
 button:disabled {

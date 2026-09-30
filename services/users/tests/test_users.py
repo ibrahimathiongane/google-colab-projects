@@ -1,6 +1,8 @@
 import hashlib
+from datetime import UTC, datetime, timedelta
 
 import jwt
+import mailer
 import models
 from db import SessionLocal
 
@@ -135,3 +137,139 @@ def test_refresh_token_hash_is_stored_not_the_raw_value(client):
         db.close()
     assert hashlib.sha256(raw.encode()).hexdigest() in stored
     assert raw not in stored
+
+
+# --- Password reset -----------------------------------------------------------
+
+def _extract_token(url: str) -> str:
+    from urllib.parse import parse_qs, urlparse
+
+    return parse_qs(urlparse(url).query)["token"][0]
+
+
+def _capture_reset_link(client, monkeypatch, email):
+    """Perform forgot-password and return the raw token from the link."""
+    sent = {}
+
+    def fake_send(to, reset_url, ttl_minutes=30):
+        sent["to"] = to
+        sent["url"] = reset_url
+
+    monkeypatch.setattr(mailer, "send_reset_email", fake_send)
+    resp = client.post("/forgot-password", json={"email": email})
+    assert resp.status_code == 200
+    assert "url" in sent, "an email should have been sent for an existing account"
+    return _extract_token(sent["url"])
+
+
+def test_forgot_password_answers_200_for_unknown_email(client):
+    resp = client.post("/forgot-password", json={"email": "ghost@test.dev"})
+    assert resp.status_code == 200
+    assert resp.json() == {"ok": True}
+
+
+def test_forgot_password_gives_the_same_answer_whether_or_not_the_account_exists(
+    client,
+):
+    register(client)
+    known = client.post("/forgot-password", json={"email": "alice@test.dev"})
+    unknown = client.post("/forgot-password", json={"email": "ghost@test.dev"})
+    assert known.status_code == unknown.status_code
+    assert known.json() == unknown.json()
+
+
+def test_forgot_password_stores_only_the_token_hash(client, monkeypatch):
+    register(client)
+    raw = _capture_reset_link(client, monkeypatch, "alice@test.dev")
+    db = SessionLocal()
+    try:
+        user = db.query(models.User).one()
+        stored = user.reset_token_hash
+        assert user.reset_expires_at is not None
+    finally:
+        db.close()
+    assert stored == hashlib.sha256(raw.encode()).hexdigest()
+    assert stored != raw
+
+
+def test_reset_password_with_valid_token_works(client, monkeypatch):
+    register(client)
+    token = _capture_reset_link(client, monkeypatch, "alice@test.dev")
+
+    resp = client.post(
+        "/reset-password", json={"token": token, "password": "nouveau-motdepasse"}
+    )
+    assert resp.status_code == 200
+
+    assert (
+        client.post(
+            "/login",
+            json={"email": "alice@test.dev", "password": "nouveau-motdepasse"},
+        ).status_code
+        == 200
+    )
+    assert (
+        client.post(
+            "/login", json={"email": "alice@test.dev", "password": PASSWORD}
+        ).status_code
+        == 401
+    )
+
+
+def test_reset_password_revokes_every_existing_session(client, monkeypatch):
+    refresh = register(client).json()["refresh_token"]
+    token = _capture_reset_link(client, monkeypatch, "alice@test.dev")
+    client.post("/reset-password", json={"token": token, "password": PASSWORD * 2})
+    resp = client.post("/refresh", json={"refresh_token": refresh})
+    assert resp.status_code == 401
+
+
+def test_reset_password_rejects_expired_token(client, monkeypatch):
+    register(client)
+    token = _capture_reset_link(client, monkeypatch, "alice@test.dev")
+    db = SessionLocal()
+    try:
+        user = db.query(models.User).one()
+        user.reset_expires_at = datetime.now(UTC) - timedelta(minutes=1)
+        db.commit()
+    finally:
+        db.close()
+    resp = client.post(
+        "/reset-password", json={"token": token, "password": PASSWORD * 2}
+    )
+    assert resp.status_code == 400
+    assert resp.json()["detail"] == "Invalid or expired reset link"
+
+
+def test_reset_password_token_is_single_use(client, monkeypatch):
+    register(client)
+    token = _capture_reset_link(client, monkeypatch, "alice@test.dev")
+    payload = {"token": token, "password": PASSWORD * 2}
+    assert client.post("/reset-password", json=payload).status_code == 200
+    # Replay with the same token: the link was consumed.
+    payload["password"] = PASSWORD * 3
+    assert client.post("/reset-password", json=payload).status_code == 400
+
+
+def test_reset_password_rejects_unknown_token(client):
+    resp = client.post(
+        "/reset-password", json={"token": "y" * 43, "password": PASSWORD * 2}
+    )
+    assert resp.status_code == 400
+
+
+def test_reset_password_requires_a_strong_password(client, monkeypatch):
+    register(client)
+    token = _capture_reset_link(client, monkeypatch, "alice@test.dev")
+    resp = client.post("/reset-password", json={"token": token, "password": "abc"})
+    assert resp.status_code == 422
+
+
+def test_forgot_password_is_rate_limited_per_email(client):
+    register(client)
+    statuses = []
+    for _ in range(4):
+        resp = client.post("/forgot-password", json={"email": "alice@test.dev"})
+        statuses.append(resp.status_code)
+    assert statuses[:3] == [200] * 3
+    assert statuses[3] == 429

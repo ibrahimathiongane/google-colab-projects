@@ -29,6 +29,10 @@ class User(Base):
     email = Column(String(255), nullable=False, unique=True, index=True)
     password_hash = Column(String(255), nullable=False)
     name = Column(String(120), nullable=False, default="")
+    # Password reset: only the SHA-256 of the token is stored (like refresh
+    # tokens); NULL = no pending reset.
+    reset_token_hash = Column(String(64), nullable=True, unique=True, index=True)
+    reset_expires_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

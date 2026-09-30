@@ -13,6 +13,11 @@ services:
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set (strong, e.g. openssl rand -hex 24)}
 
+  users:
+    environment:
+      # Reset emails must link back to the production SPA.
+      APP_URL: https://${APP_HOST:?APP_HOST must be set (e.g. app.example.com)}
+
   gateway:
     ports: !override []
     environment:
