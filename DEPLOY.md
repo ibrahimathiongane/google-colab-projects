@@ -79,6 +79,11 @@ SMTP_PORT=587
 SMTP_USER=smtp-user
 SMTP_PASSWORD=smtp-password
 EMAIL_FROM=noreply@yourdomain.com
+
+# Optional: privacy-friendly analytics on the landing (Plausible-compatible,
+# no cookies → no consent banner; baked at build time).
+# VITE_ANALYTICS_SRC=https://plausible.io/js/script.js
+# VITE_ANALYTICS_DOMAIN=yourdomain.com
 ```
 
 Start everything:
@@ -96,6 +101,10 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml ps   # all healt
 curl -sI https://example.com/health          # 200 (landing)
 curl -sI https://app.example.com/            # 200 (app, valid cert)
 curl -s https://app.example.com/api/health   # 200 (gateway via SPA proxy)
+
+# SEO artifacts (absolute URLs derived from DOMAIN)
+curl -s https://example.com/robots.txt | tail -1   # Sitemap: https://example.com/sitemap.xml
+curl -s https://example.com/sitemap.xml | grep loc # https://example.com/
 ```
 
 Browse both URLs — the browser must show a padlock (Caddy auto-HTTPS).

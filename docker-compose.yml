@@ -146,6 +146,11 @@ services:
       dockerfile: landing/Dockerfile
       args:
         VITE_APP_URL: ${APP_URL:-http://localhost:5173}
+        # Canonical URL for og:*/robots/sitemap (prod sets https://$DOMAIN).
+        VITE_SITE_URL: ${VITE_SITE_URL:-http://localhost:5174}
+        # Optional privacy-friendly analytics (Plausible-compatible).
+        VITE_ANALYTICS_SRC: ${VITE_ANALYTICS_SRC:-}
+        VITE_ANALYTICS_DOMAIN: ${VITE_ANALYTICS_DOMAIN:-}
     ports:
       - "${LANDING_PORT:-5174}:80"
     healthcheck:

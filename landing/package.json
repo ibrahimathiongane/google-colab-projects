@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "og": "node scripts/make-og.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

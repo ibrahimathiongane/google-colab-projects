@@ -86,6 +86,15 @@ describe("index.html PWA wiring", () => {
     expect(html).toContain('name="theme-color" content="#08090a"');
     expect(html).toContain('name="viewport"');
   });
+
+  it("keeps the app out of search indexes (the landing is the entry point)", () => {
+    expect(html).toContain('name="robots" content="noindex, nofollow"');
+    const robots = fs.readFileSync(
+      path.join(here, "..", "..", "public", "robots.txt"),
+      "utf8",
+    );
+    expect(robots).toContain("Disallow: /");
+  });
 });
 
 describe("service worker fetch policy", () => {

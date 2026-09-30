@@ -46,6 +46,10 @@ automatically: `DOMAIN` → landing, `APP_HOST` → the app (Postgres and the
 gateway stay on the internal network). Full guide — server setup, DNS,
 backups, day-2 operations: **[DEPLOY.md](DEPLOY.md)**.
 
+The landing ships SEO artifacts (Open Graph/Twitter card, canonical,
+`robots.txt`, `sitemap.xml` — absolute URLs built from `DOMAIN`) and
+optional privacy-friendly analytics (`VITE_ANALYTICS_SRC`, Plausible-compatible).
+
 ## Services
 
 | Service | Port | Purpose |

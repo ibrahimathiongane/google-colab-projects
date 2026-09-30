@@ -31,6 +31,7 @@ services:
     build:
       args:
         VITE_APP_URL: https://${APP_HOST:?APP_HOST must be set (e.g. app.example.com)}
+        VITE_SITE_URL: https://${DOMAIN:?DOMAIN must be set (e.g. example.com)}
 
   # TLS terminator + single public entrypoint (auto-HTTPS via Let's Encrypt,
   # certificates persisted in the caddy_data volume).

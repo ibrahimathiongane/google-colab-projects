@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>OG card</title>
+    <style>
+      @font-face {
+        font-family: "InterVariable";
+        src: url("../../frontend/node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2")
+          format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: block;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: #010102;
+        color: #f2f3f5;
+        font-family: "InterVariable", system-ui, sans-serif;
+        position: relative;
+      }
+      .glow {
+        position: absolute;
+        right: -160px;
+        top: -320px;
+        width: 940px;
+        height: 940px;
+        background: radial-gradient(
+          circle,
+          rgba(94, 106, 210, 0.32),
+          rgba(94, 106, 210, 0) 62%
+        );
+      }
+      .left {
+        position: absolute;
+        left: 72px;
+        top: 84px;
+        width: 520px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 27px;
+        font-weight: 600;
+        letter-spacing: -0.4px;
+      }
+      .brand svg { width: 52px; height: 52px; display: block; }
+      h1 {
+        margin-top: 44px;
+        font-size: 66px;
+        line-height: 1.04;
+        font-weight: 650;
+        letter-spacing: -2.4px;
+      }
+      .tag {
+        margin-top: 26px;
+        font-size: 22px;
+        line-height: 1.5;
+        color: #8a8f98;
+      }
+      .chips {
+        display: flex;
+        gap: 12px;
+        margin-top: 48px;
+      }
+      .chips span {
+        font-size: 16px;
+        font-weight: 500;
+        color: #c1c5cb;
+        border: 1px solid #2a2c31;
+        background: rgba(15, 16, 17, 0.7);
+        border-radius: 999px;
+        padding: 9px 18px;
+      }
+      .shot {
+        position: absolute;
+        right: -56px;
+        top: 104px;
+        width: 640px;
+      }
+      .shot img {
+        display: block;
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid #26282d;
+        box-shadow: 0 44px 90px rgba(0, 0, 0, 0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glow"></div>
+    <div class="left">
+      <div class="brand">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <rect width="512" height="512" rx="104" fill="#0f1011" />
+          <rect x="6" y="6" width="500" height="500" rx="98" fill="none" stroke="#23252a" stroke-width="4" />
+          <path d="M256 424 V236" stroke="#5e6ad2" stroke-width="30" stroke-linecap="round" />
+          <ellipse cx="340" cy="206" rx="88" ry="56" transform="rotate(-32 340 206)" fill="#828fff" />
+          <ellipse cx="176" cy="252" rx="76" ry="48" transform="rotate(30 176 252)" fill="#5e6ad2" />
+        </svg>
+        Habit Tracker
+      </div>
+      <h1>Build habits<br />that stick</h1>
+      <p class="tag">
+        Tiny Habits · automaticity · recovery rate —<br />
+        the science-based habit tracker.
+      </p>
+      <div class="chips">
+        <span>Science-based</span>
+        <span>Free to start</span>
+        <span>EN · FR</span>
+      </div>
+    </div>
+    <div class="shot">
+      <img src="../public/images/dashboard.png" alt="" />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,3 @@
+# The app lives behind login — the landing page is the public entry point.
+User-agent: *
+Disallow: /
