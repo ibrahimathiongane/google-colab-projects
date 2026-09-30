@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NewHabit from "./pages/NewHabit";
 import Insights from "./pages/Insights";
+import EditHabit from "./pages/EditHabit";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -67,6 +68,10 @@ export default function App() {
         <Route
           path="/new"
           element={user ? <NewHabit /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/edit/:id"
+          element={user ? <EditHabit /> : <Navigate to="/login" />}
         />
         <Route
           path="/insights"

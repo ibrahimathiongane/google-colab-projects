@@ -4,6 +4,7 @@ from conftest import USER_A, USER_B, valid_habit
 def test_requires_authentication(client):
     assert client.get("/").status_code == 401
     assert client.post("/", json=valid_habit()).status_code == 401
+    assert client.put("/1", json={"name": "x"}).status_code == 401
     assert client.delete("/1").status_code == 401
 
 
@@ -73,3 +74,87 @@ def test_delete_twice_is_404(client):
     assert (
         client.delete(f"/{created['id']}", headers=USER_A).status_code == 404
     )
+
+
+def test_update_changes_fields_and_regenerates_if_then(client):
+    created = client.post("/", json=valid_habit(), headers=USER_A).json()
+
+    resp = client.put(
+        f"/{created['id']}",
+        json={"anchor": "apres mon jogging", "celebration": "high five"},
+        headers=USER_A,
+    )
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["anchor"] == "apres mon jogging"
+    assert body["celebration"] == "high five"
+    # untouched fields survive
+    assert body["name"] == "Boire un verre"
+    assert body["tiny_behavior"] == "boire un verre d'eau"
+    # the implementation intention follows the recipe
+    assert body["if_then"] == (
+        "After I apres mon jogging, I will boire un verre d'eau, "
+        "then I will high five."
+    )
+
+
+def test_update_single_field_keeps_the_rest(client):
+    created = client.post("/", json=valid_habit(), headers=USER_A).json()
+
+    resp = client.put(f"/{created['id']}", json={"cue_time": "07:15"},
+                      headers=USER_A)
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["cue_time"] == "07:15"
+    assert body["if_then"] == created["if_then"]
+    assert body["name"] == created["name"]
+
+
+def test_update_someone_elses_habit_is_404(client):
+    created = client.post("/", json=valid_habit(), headers=USER_B).json()
+    resp = client.put(f"/{created['id']}", json={"name": "Hacked"},
+                      headers=USER_A)
+    assert resp.status_code == 404
+    # Victim's habit is untouched.
+    mine = client.get("/", headers=USER_B).json()
+    assert mine[0]["name"] == "Boire un verre"
+
+
+def test_update_of_deleted_habit_is_404(client):
+    created = client.post("/", json=valid_habit(), headers=USER_A).json()
+    client.delete(f"/{created['id']}", headers=USER_A)
+    resp = client.put(f"/{created['id']}", json={"name": "Back"},
+                      headers=USER_A)
+    assert resp.status_code == 404
+
+
+def test_update_unknown_habit_is_404(client):
+    assert client.put("/9999", json={"name": "x"}, headers=USER_A).status_code == 404
+
+
+def test_update_validation(client):
+    created = client.post("/", json=valid_habit(), headers=USER_A).json()
+    habit_id = created["id"]
+
+    # Bad cue time -> 422, not a broken row.
+    assert (
+        client.put(
+            f"/{habit_id}", json={"cue_time": "99:99"}, headers=USER_A
+        ).status_code
+        == 422
+    )
+    # Blank / null name -> 422.
+    assert (
+        client.put(f"/{habit_id}", json={"name": "   "}, headers=USER_A).status_code
+        == 422
+    )
+    assert (
+        client.put(f"/{habit_id}", json={"name": None}, headers=USER_A).status_code
+        == 422
+    )
+    # Empty payload -> 422 (nothing to update).
+    assert client.put(f"/{habit_id}", json={}, headers=USER_A).status_code == 422
+
+    # Nothing was applied by the failed calls.
+    after = client.get("/", headers=USER_A).json()[0]
+    assert after == created

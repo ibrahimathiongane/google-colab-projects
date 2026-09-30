@@ -250,3 +250,120 @@ button {
   padding: 50px;
   color: #666;
 }
+
+/* --- Phase 1 / Bloc A: habit card extras -------------------------------- */
+
+.habit-card {
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.habit-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.habit-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.btn-edit {
+  background: #f0f0f0;
+  color: #555;
+  font-size: 0.9em;
+}
+
+.mini-calendar {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: 4px;
+  margin-top: 10px;
+  max-width: 320px;
+}
+
+.mini-calendar .day {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: block;
+}
+
+.mini-calendar .day.on {
+  background: #4caf50;
+}
+
+.mini-calendar .day.off {
+  background: #e0e0e0;
+}
+
+.automaticity {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.auto-label {
+  font-size: 0.85em;
+  color: #555;
+}
+
+.auto-scale {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.auto-btn {
+  padding: 6px 9px;
+  font-size: 0.85em;
+  background: #eef7ee;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+  border-radius: 6px;
+}
+
+.auto-btn:hover {
+  background: #4caf50;
+  color: #fff;
+}
+
+.auto-badge {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.8em;
+  color: #2e7d32;
+  background: #eef7ee;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+/* --- Edit habit form ----------------------------------------------------- */
+
+.edit-habit {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.edit-habit h2 {
+  margin-bottom: 10px;
+}
+
+.edit-habit label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.edit-habit input {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.edit-habit .wizard-nav {
+  margin-top: 20px;
+}

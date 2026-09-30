@@ -62,6 +62,7 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
 | GET | `/api/users/me` | Current profile |
 | GET | `/api/habits/` | List habits |
 | POST | `/api/habits/` | Create habit |
+| PUT | `/api/habits/{id}` | Partial update (regenerates the if-then) |
 | DELETE | `/api/habits/{id}` | Deactivate habit |
 | POST | `/api/tracking/checkin` | Record check-in (upsert per day) |
 | GET | `/api/tracking/today?date=YYYY-MM-DD` | Today's check-ins |
@@ -80,7 +81,8 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
 
 ```bash
 # everything (ruff + pytest per service + eslint + vitest + build)
-PYTHON=python3 ./scripts/test.sh
+python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+PYTHON=.venv/bin/python ./scripts/test.sh
 ```
 
 Backend and frontend suites can be run separately:

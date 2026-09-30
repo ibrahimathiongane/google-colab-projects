@@ -89,6 +89,7 @@ export const api = {
 
   listHabits: () => req("GET", "/habits/"),
   createHabit: (h) => req("POST", "/habits/", h),
+  updateHabit: (id, payload) => req("PUT", `/habits/${id}`, payload),
   deleteHabit: (id) => req("DELETE", `/habits/${id}`),
 
   checkin: (habit_id, date, completed, automaticity, note = "") =>

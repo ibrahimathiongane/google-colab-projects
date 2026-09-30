@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function NewHabit() {
   const [step, setStep] = useState(0);
+  const [name, setName] = useState("");
   const [anchor, setAnchor] = useState("");
   const [tinyBehavior, setTinyBehavior] = useState("");
   const [celebration, setCelebration] = useState("");
@@ -36,7 +37,7 @@ export default function NewHabit() {
 
   const submit = async () => {
     await api.createHabit({
-      name: tinyBehavior,
+      name,
       anchor,
       tiny_behavior: tinyBehavior,
       celebration,
@@ -61,6 +62,14 @@ export default function NewHabit() {
       </div>
       <h3>{steps[step].title}</h3>
       <p>{steps[step].desc}</p>
+      {step === 0 && (
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Short name (e.g., Drink water)"
+          aria-label="Habit name"
+        />
+      )}
       <input
         value={steps[step].value}
         onChange={(e) => steps[step].set(e.target.value)}
@@ -81,7 +90,11 @@ export default function NewHabit() {
           <button
             className="btn-primary"
             onClick={() => setStep(step + 1)}
-            disabled={!steps[step].value}
+            disabled={
+              step === 0
+                ? !name.trim() || !steps[0].value.trim()
+                : !steps[step].value.trim()
+            }
           >
             Next
           </button>

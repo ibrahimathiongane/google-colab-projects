@@ -34,6 +34,28 @@ def require_user_id(x_user_id: str | None = Header(None)) -> int:
         raise HTTPException(401, "Invalid user identity") from None
 
 
+def if_then_sentence(anchor: str, tiny_behavior: str, celebration: str) -> str:
+    # Implementation intention (Gollwitzer): the sentence is the habit's
+    # identity, generated from the recipe the user filled in.
+    return (
+        f"After I {anchor}, I will {tiny_behavior}, "
+        f"then I will {celebration}."
+    )
+
+
+def habit_payload(habit: models.Habit) -> dict:
+    return {
+        "id": habit.id,
+        "name": habit.name,
+        "anchor": habit.anchor,
+        "tiny_behavior": habit.tiny_behavior,
+        "celebration": habit.celebration,
+        "if_then": habit.if_then,
+        "cue_time": habit.cue_time,
+        "created_at": habit.created_at.isoformat(),
+    }
+
+
 @app.get("/health")
 def health(db: Session = Depends(get_db)):
     try:
@@ -51,19 +73,7 @@ def list_habits(
     habits = (
         db.query(models.Habit).filter_by(user_id=user_id, active=True).all()
     )
-    return [
-        {
-            "id": h.id,
-            "name": h.name,
-            "anchor": h.anchor,
-            "tiny_behavior": h.tiny_behavior,
-            "celebration": h.celebration,
-            "if_then": h.if_then,
-            "cue_time": h.cue_time,
-            "created_at": h.created_at.isoformat(),
-        }
-        for h in habits
-    ]
+    return [habit_payload(h) for h in habits]
 
 
 @app.post("/", status_code=201)
@@ -72,26 +82,47 @@ def create_habit(
     user_id: int = Depends(require_user_id),
     db: Session = Depends(get_db),
 ):
-    # Implementation intention (Gollwitzer): the sentence is the habit's
-    # identity, generated from the recipe the user filled in.
-    if_then = (
-        f"After I {body.anchor}, I will {body.tiny_behavior}, "
-        f"then I will {body.celebration}."
-    )
     habit = models.Habit(
         user_id=user_id,
         name=body.name,
         anchor=body.anchor,
         tiny_behavior=body.tiny_behavior,
         celebration=body.celebration,
-        if_then=if_then,
+        if_then=if_then_sentence(body.anchor, body.tiny_behavior, body.celebration),
         cue_time=body.cue_time,
     )
     db.add(habit)
     db.commit()
     db.refresh(habit)
     logger.info("habit created id=%s user=%s", habit.id, user_id)
-    return {"id": habit.id, "if_then": habit.if_then}
+    return habit_payload(habit)
+
+
+@app.put("/{habit_id}")
+def update_habit(
+    habit_id: int,
+    body: schemas.UpdateHabitIn,
+    user_id: int = Depends(require_user_id),
+    db: Session = Depends(get_db),
+):
+    habit = (
+        db.query(models.Habit)
+        .filter_by(id=habit_id, user_id=user_id, active=True)
+        .first()
+    )
+    if not habit:
+        raise HTTPException(404, "Habit not found")
+
+    for field, value in body.model_dump(exclude_unset=True).items():
+        setattr(habit, field, value)
+    # The sentence is derived from the recipe: keep it in sync on every edit.
+    habit.if_then = if_then_sentence(
+        habit.anchor, habit.tiny_behavior, habit.celebration
+    )
+    db.commit()
+    db.refresh(habit)
+    logger.info("habit updated id=%s user=%s", habit.id, user_id)
+    return habit_payload(habit)
 
 
 @app.delete("/{habit_id}")
