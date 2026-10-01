@@ -84,7 +84,26 @@ EMAIL_FROM=noreply@yourdomain.com
 # no cookies → no consent banner; baked at build time).
 # VITE_ANALYTICS_SRC=https://plausible.io/js/script.js
 # VITE_ANALYTICS_DOMAIN=yourdomain.com
+
+# Monetisation — Stripe (start with test keys, swap to live keys later)
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+# Create the two prices in the Stripe dashboard first (Pro/year subscription,
+# Lifetime one-time) and paste their IDs here.
+STRIPE_PRICE_PRO=price_...
+STRIPE_PRICE_LIFETIME=price_...
 ```
+
+Then register the webhook endpoint in the Stripe dashboard (Developers →
+Webhooks → Add endpoint):
+
+- URL: `https://$DOMAIN` is not used by the app — use `https://<your-api-host>/api/billing/webhooks`
+  (behind the edge it is the same host as the SPA: `https://$APP_HOST/api/billing/webhooks`)
+- Events: `checkout.session.completed`, `customer.subscription.*`, `invoice.paid`
+- Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
+
+Without `STRIPE_SECRET_KEY` the app still runs: checkout/portal answer
+`503 Billing is not configured` and everyone stays on the free plan.
 
 Start everything:
 

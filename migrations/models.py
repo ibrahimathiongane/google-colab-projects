@@ -100,3 +100,46 @@ class CheckIn(Base):
     created_at = Column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+
+
+class BillingCustomer(Base):
+    """Stripe customer mapping — one row per user (first checkout wins,
+    refreshed when Stripe issues a new customer)."""
+
+    __tablename__ = "billing_customers"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False, unique=True, index=True)
+    stripe_customer_id = Column(String(64), nullable=False, unique=True, index=True)
+    email = Column(String(255), nullable=False, default="")
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
+class BillingSubscription(Base):
+    """Current plan of a user. A row exists only after the first payment:
+    no row (or a canceled one) = free plan. ``plan`` is 'pro' (recurring)
+    or 'lifetime' (one-time payment — no stripe subscription id)."""
+
+    __tablename__ = "billing_subscriptions"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False, unique=True, index=True)
+    stripe_subscription_id = Column(
+        String(64), nullable=True, unique=True, index=True
+    )
+    plan = Column(String(16), nullable=False)
+    status = Column(String(32), nullable=False, default="active")
+    price_id = Column(String(64), nullable=False, default="")
+    current_period_end = Column(DateTime(timezone=True), nullable=True)
+    cancel_at_period_end = Column(Boolean, nullable=False, default=False)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )

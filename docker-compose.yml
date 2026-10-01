@@ -93,6 +93,25 @@ services:
     healthcheck: *py-healthcheck
     restart: unless-stopped
 
+  billing:
+    build: ./services/billing
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-habit}:${POSTGRES_PASSWORD:-habit}@postgres:5432/${POSTGRES_DB:-habit_tracker}
+      # Public base URL of the SPA — Stripe redirects point back to it.
+      APP_URL: ${APP_URL:-http://localhost:5173}
+      # Stripe (test keys first) — see .env.example / DEPLOY.md.
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_PRICE_PRO: ${STRIPE_PRICE_PRO:-}
+      STRIPE_PRICE_LIFETIME: ${STRIPE_PRICE_LIFETIME:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    healthcheck: *py-healthcheck
+    restart: unless-stopped
+
   gateway:
     build: ./gateway
     environment:
@@ -102,6 +121,7 @@ services:
       HABITS_URL: http://habits:8000
       TRACKING_URL: http://tracking:8000
       INSIGHTS_URL: http://insights:8000
+      BILLING_URL: http://billing:8000
     ports:
       - "${GATEWAY_PORT:-8000}:8000"
     depends_on:
@@ -112,6 +132,8 @@ services:
       tracking:
         condition: service_healthy
       insights:
+        condition: service_healthy
+      billing:
         condition: service_healthy
     healthcheck: *py-healthcheck
     restart: unless-stopped

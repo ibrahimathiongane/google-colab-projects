@@ -59,6 +59,7 @@ optional privacy-friendly analytics (`VITE_ANALYTICS_SRC`, Plausible-compatible)
 | habits | 8002 | CRUD habits with scientific fields |
 | tracking | 8003 | Check-ins, streaks, recovery |
 | insights | 8004 | Success rate, habit strength, best time |
+| billing | 8005 | Stripe checkout, customer portal, entitlements |
 | migrations | — | Alembic schema bootstrap (runs once) |
 | frontend | 5173 | React SPA served by nginx (proxies `/api` → gateway) |
 | landing | 5174 | Static marketing site (no API, no gateway) |
@@ -92,6 +93,10 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
 | GET | `/api/tracking/range?habit_id=&days=` | History for charts |
 | GET | `/api/tracking/streaks` | Current streaks |
 | GET | `/api/insights/summary?tz_offset=` | Scientific insights |
+| GET | `/api/billing/` | Current plan (free / pro / lifetime) |
+| POST | `/api/billing/checkout` | Stripe Checkout session (`{"plan": "pro" \| "lifetime"}`) |
+| POST | `/api/billing/portal` | Stripe customer portal session |
+| POST | `/api/billing/webhooks` | Stripe events (public, signature-verified) |
 
 ## Security notes (Phase 0)
 

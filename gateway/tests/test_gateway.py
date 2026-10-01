@@ -122,3 +122,19 @@ def test_password_reset_paths_are_public(client):
     )
     assert resp.status_code == 200
     assert len(client.recorder.requests) == 2
+
+
+def test_stripe_webhook_is_public(client):
+    """Stripe cannot present a JWT — the webhook verifies its own HMAC."""
+    resp = client.post(
+        "/api/billing/webhooks",
+        content=b"{}",
+        headers={"stripe-signature": "t=1,v1=whatever"},
+    )
+    assert resp.status_code == 200
+    assert len(client.recorder.requests) == 1
+
+
+def test_billing_routes_require_auth_except_webhooks(client):
+    assert client.post("/api/billing/checkout", json={"plan": "pro"}).status_code == 401
+    assert client.get("/api/billing/").status_code == 401

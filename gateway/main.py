@@ -52,12 +52,14 @@ SERVICES = {
     "habits": os.environ["HABITS_URL"],
     "tracking": os.environ["TRACKING_URL"],
     "insights": os.environ["INSIGHTS_URL"],
+    "billing": os.environ["BILLING_URL"],
 }
 
 # Paths reachable without a valid JWT: (service, normalized path).
 # Login/register/refresh/logout and the password-reset flow are the only
 # unauthenticated entries — refresh and logout carry their own credential
-# (the reset endpoints are rate-limited by the users service).
+# (the reset endpoints are rate-limited by the users service). The Stripe
+# webhook is called by Stripe, so it carries its own HMAC signature instead.
 PUBLIC_PATHS = {
     ("users", "register"),
     ("users", "login"),
@@ -65,6 +67,7 @@ PUBLIC_PATHS = {
     ("users", "logout"),
     ("users", "forgot-password"),
     ("users", "reset-password"),
+    ("billing", "webhooks"),
 }
 
 

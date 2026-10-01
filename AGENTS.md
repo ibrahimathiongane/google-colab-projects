@@ -12,6 +12,7 @@ Science-based habit tracker (microservices). Differentiator: behavioral science 
   - `habits/` :8002 — habit CRUD with scientific fields (anchor, tiny_behavior, celebration, if_then)
   - `tracking/` :8003 — check-ins, streaks, recovery
   - `insights/` :8004 — success rate, habit strength, best time
+  - `billing/` :8005 — Stripe Checkout (Pro/year + Lifetime), customer portal, webhook-driven entitlements
 - **Migrations** (`migrations/`): Alembic, canonical schema (`migrations/models.py`), runs once via the `migrations` compose service.
 - **Frontend** (`frontend/`): React + Vite + Recharts. Dev on :5173 (vite), prod behind nginx.
 - **Landing** (`landing/`): separate static marketing site (React + Vite, **no API, no gateway**). Dev on :5174, prod behind its own nginx; build context is the repo root because it imports `frontend/src/tokens.css`. "Open app" CTAs point to `VITE_APP_URL` (default `http://localhost:5173`).
