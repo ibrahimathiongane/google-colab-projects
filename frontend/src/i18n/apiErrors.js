@@ -12,6 +12,7 @@ const RULES = [
   ["at least 8 characters", "passwordTooShort"],
   ["Invalid or expired reset link", "resetLinkInvalid"],
   ["upgrade to Pro", "upgradeRequired"],
+  ["Notifications are not configured", "remindersNotConfigured"],
   ["Invalid refresh token", "sessionExpired"],
   ["Authentication required", "sessionExpired"],
   ["database unavailable", "server"],

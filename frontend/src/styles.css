@@ -438,6 +438,57 @@ input:focus {
   margin-bottom: var(--space-4);
 }
 
+.dashboard-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.reminders {
+  position: relative;
+  text-align: right;
+}
+
+.reminders-error {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: var(--space-1);
+  max-width: 260px;
+  font-size: 12.5px;
+}
+
+.bell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: var(--border-hairline);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-50);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.bell:hover:not(:disabled) {
+  color: var(--ink-70);
+  border-color: var(--hairline-strong);
+}
+
+.bell.is-on {
+  color: var(--success);
+  border-color: var(--hairline-strong);
+}
+
+.bell:disabled {
+  color: var(--ink-30);
+  cursor: not-allowed;
+}
+
 .habit-card {
   display: flex;
   justify-content: space-between;

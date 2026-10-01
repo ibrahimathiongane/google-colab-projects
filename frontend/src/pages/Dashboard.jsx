@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { api, localDate } from "../api";
 import HabitCard from "../components/HabitCard";
+import RemindersToggle from "../components/RemindersToggle";
 
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
@@ -52,9 +53,12 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      <h2>
-        {t("dashboard.today")} {headingDate}
-      </h2>
+      <div className="dashboard-head">
+        <h2>
+          {t("dashboard.today")} {headingDate}
+        </h2>
+        <RemindersToggle />
+      </div>
       {habits.length === 0 && (
         <p>
           {t("dashboard.noHabits")}{" "}

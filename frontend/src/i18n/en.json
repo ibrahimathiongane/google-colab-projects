@@ -66,6 +66,13 @@
       "cta": "Buy lifetime"
     }
   },
+  "reminders": {
+    "enable": "Enable reminders",
+    "disable": "Disable reminders",
+    "denied": "Notifications are blocked in your browser settings",
+    "unsupported": "Reminders need a browser with push notification support",
+    "devOnly": "Reminders run in the production app (installed PWA)"
+  },
   "dashboard": {
     "today": "Today —",
     "noHabits": "No habits yet.",
@@ -152,6 +159,7 @@
     "passwordTooShort": "Password must be at least 8 characters.",
     "resetLinkInvalid": "This reset link is invalid or has expired. Request a new one.",
     "upgradeRequired": "The free plan includes 1 habit. Upgrade to Pro for unlimited habits — see the Plan page.",
+    "remindersNotConfigured": "Push reminders aren't configured on the server yet",
     "sessionExpired": "Your session expired. Please log in again.",
     "notFound": "Not found.",
     "server": "Service unavailable. Please try again.",

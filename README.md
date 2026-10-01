@@ -124,6 +124,16 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
 - Registered only in production builds (`frontend/src/pwa.js`); `sw.js` and
   `manifest.json` are served with `Cache-Control: no-cache` by nginx.
 
+### Reminders (web push)
+
+- Opt-in bell on the dashboard (the permission prompt only ever appears on a
+  click); the subscription stores the device's timezone offset and language.
+- The `notifications` service sends a push at each habit's `cue_time`
+  (device-local), only when it isn't completed yet — at most one per habit
+  per device per day — and drops endpoints the push service reports as gone.
+- VAPID keys via `python scripts/gen-vapid-keys.py` (see `.env.example`);
+  without them, enabling reminders answers `503`.
+
 ### i18n (EN + FR)
 
 - i18next dictionaries in `frontend/src/i18n/{en,fr}.json` — a test enforces

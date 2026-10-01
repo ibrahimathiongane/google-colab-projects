@@ -95,6 +95,13 @@ export const api = {
   checkout: (plan) => req("POST", "/billing/checkout", { plan }),
   portal: () => req("POST", "/billing/portal"),
 
+  remindersStatus: () => req("GET", "/notifications/"),
+  remindersPublicKey: () => req("GET", "/notifications/vapid-public-key"),
+  remindersSubscribe: (payload) =>
+    req("POST", "/notifications/subscribe", payload),
+  remindersUnsubscribe: (endpoint) =>
+    req("POST", "/notifications/unsubscribe", { endpoint }),
+
   listHabits: () => req("GET", "/habits/"),
   createHabit: (h) => req("POST", "/habits/", h),
   updateHabit: (id, payload) => req("PUT", `/habits/${id}`, payload),
