@@ -23,7 +23,7 @@ jobs:
       - name: pytest (one run per app)
         run: |
           set -e
-          for app in gateway services/users services/billing services/notifications services/habits services/tracking services/insights; do
+          for app in gateway services/users services/billing services/notifications services/habits services/tracking services/insights migrations; do
             echo "==> $app"
             python -m pytest "$app/tests" -q
           done

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "landing": {
+      "root": "landing",
+      "framework": "vite"
+    },
+    "frontend": {
+      "root": "frontend",
+      "framework": "vite"
+    },
+    "gateway": {
+      "root": "gateway",
+      "framework": "fastapi",
+      "entrypoint": "main:app",
+      "bindings": [
+        { "type": "service", "service": "users", "format": "url", "env": "USERS_URL" },
+        { "type": "service", "service": "habits", "format": "url", "env": "HABITS_URL" },
+        { "type": "service", "service": "tracking", "format": "url", "env": "TRACKING_URL" },
+        { "type": "service", "service": "insights", "format": "url", "env": "INSIGHTS_URL" },
+        { "type": "service", "service": "billing", "format": "url", "env": "BILLING_URL" },
+        { "type": "service", "service": "notifications", "format": "url", "env": "NOTIFICATIONS_URL" },
+        { "type": "service", "service": "migrations", "format": "url", "env": "MIGRATIONS_URL" }
+      ]
+    },
+    "users": {
+      "root": "services/users",
+      "framework": "fastapi",
+      "entrypoint": "main:app"
+    },
+    "habits": {
+      "root": "services/habits",
+      "framework": "fastapi",
+      "entrypoint": "main:app"
+    },
+    "tracking": {
+      "root": "services/tracking",
+      "framework": "fastapi",
+      "entrypoint": "main:app"
+    },
+    "insights": {
+      "root": "services/insights",
+      "framework": "fastapi",
+      "entrypoint": "main:app"
+    },
+    "billing": {
+      "root": "services/billing",
+      "framework": "fastapi",
+      "entrypoint": "main:app"
+    },
+    "notifications": {
+      "root": "services/notifications",
+      "framework": "fastapi",
+      "entrypoint": "main:app"
+    },
+    "migrations": {
+      "root": "migrations",
+      "framework": "fastapi",
+      "entrypoint": "main:app"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": { "service": "gateway" } },
+    { "source": "/(.*)", "destination": { "service": "frontend" } }
+  ]
+}

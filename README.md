@@ -50,6 +50,34 @@ The landing ships SEO artifacts (Open Graph/Twitter card, canonical,
 `robots.txt`, `sitemap.xml` — absolute URLs built from `DOMAIN`) and
 optional privacy-friendly analytics (`VITE_ANALYTICS_SRC`, Plausible-compatible).
 
+## Vercel (services)
+
+One Vercel project deploys the whole stack via `vercel.json`
+([services docs](https://vercel.com/docs/services), beta):
+
+- **Routing**: `/api/(.*)` → `gateway` (the only public backend — it receives the
+  full `/api/<service>/<path>` and proxies with the JWT rules), everything else →
+  `frontend`. `landing` and all backends stay internal; the landing gets its own
+  host-based rewrite as soon as a second hostname is attached (same split as the
+  Caddy deploy).
+- **Bindings**: the gateway is the only service that calls its siblings; the
+  bindings inject the `*_URL` variables it already reads. Bindings resolve at
+  runtime only — never at build time.
+- **Build-time env**: the FastAPI modules read `JWT_SECRET` and `DATABASE_URL` at
+  import → both must be marked *Available during build*. Leave `VITE_API_URL`
+  unset so the SPA keeps calling same-origin `/api`.
+- **Runtime env**: `ALLOWED_ORIGINS`, `APP_URL`, `MIGRATE_TOKEN`, `VAPID_*`,
+  `STRIPE_*`, `SMTP_*` (see `.env.example`).
+- **Database**: Vercel ships none — attach a managed Postgres (e.g. the Neon
+  integration from the marketplace) and set `DATABASE_URL`.
+- **Migrations**: no boot hook on Vercel; after each schema deploy run
+  `POST /api/migrations/upgrade` with header `X-Migrate-Token: $MIGRATE_TOKEN`
+  (idempotent — compose still runs Alembic as a one-shot job locally).
+- **Reminders**: the cue-time loop only ticks inside warm function instances
+  (best-effort; a cold instance sends nothing). A guaranteed window needs a
+  dedicated worker or Vercel Cron on a paid plan.
+- Local: `vercel dev` runs every service and injects the bindings.
+
 ## Services
 
 | Service | Port | Purpose |

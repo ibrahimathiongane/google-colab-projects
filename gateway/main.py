@@ -47,20 +47,30 @@ app.add_middleware(
 )
 
 JWT_SECRET = os.environ["JWT_SECRET"]
+# Base URLs of the sibling services. On Vercel these come from service
+# bindings (runtime only), in docker-compose from the container hostnames.
+# The defaults keep the module importable at build time, when bindings are
+# not resolved yet; a missing runtime value fails loudly at first call.
 SERVICES = {
-    "users": os.environ["USERS_URL"],
-    "habits": os.environ["HABITS_URL"],
-    "tracking": os.environ["TRACKING_URL"],
-    "insights": os.environ["INSIGHTS_URL"],
-    "billing": os.environ["BILLING_URL"],
-    "notifications": os.environ["NOTIFICATIONS_URL"],
+    "users": os.environ.get("USERS_URL", "http://users:8000"),
+    "habits": os.environ.get("HABITS_URL", "http://habits:8000"),
+    "tracking": os.environ.get("TRACKING_URL", "http://tracking:8000"),
+    "insights": os.environ.get("INSIGHTS_URL", "http://insights:8000"),
+    "billing": os.environ.get("BILLING_URL", "http://billing:8000"),
+    "notifications": os.environ.get("NOTIFICATIONS_URL", "http://notifications:8000"),
+    "migrations": os.environ.get("MIGRATIONS_URL", "http://migrations:8000"),
 }
+# Not part of the aggregate liveness: the migrations endpoint is a one-shot
+# admin route (it answers on Vercel, but docker-compose runs it as a job).
+LIVENESS_SERVICES = {k for k in SERVICES if k != "migrations"}
 
 # Paths reachable without a valid JWT: (service, normalized path).
 # Login/register/refresh/logout and the password-reset flow are the only
 # unauthenticated entries — refresh and logout carry their own credential
 # (the reset endpoints are rate-limited by the users service). The Stripe
 # webhook is called by Stripe, so it carries its own HMAC signature instead.
+# The migration upgrade endpoint carries its own shared token (and only
+# exists for deployments without a boot hook, e.g. Vercel).
 PUBLIC_PATHS = {
     ("users", "register"),
     ("users", "login"),
@@ -69,6 +79,7 @@ PUBLIC_PATHS = {
     ("users", "forgot-password"),
     ("users", "reset-password"),
     ("billing", "webhooks"),
+    ("migrations", "upgrade"),
 }
 
 
@@ -108,9 +119,10 @@ async def health():
     client: httpx.AsyncClient = app.state.client
     checks: dict[str, str] = {}
     all_ok = True
-    for name, base_url in SERVICES.items():
+    for name in LIVENESS_SERVICES:
+        base_url = SERVICES[name]
         try:
-            resp = await client.get(f"{base_url}/health")
+            resp = await client.get(f"{base_url.rstrip('/')}/health")
             ok = resp.status_code == 200
         except Exception:
             ok = False
@@ -154,7 +166,7 @@ async def proxy(service: str, path: str, request: Request):
     try:
         resp = await client.request(
             request.method,
-            f"{SERVICES[service]}/{normalized_path}",
+            f"{SERVICES[service].rstrip('/')}/{normalized_path}",
             content=body,
             headers=headers,
             params=request.query_params,
