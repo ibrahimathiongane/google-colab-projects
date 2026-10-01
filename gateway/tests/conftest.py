@@ -12,6 +12,7 @@ os.environ.setdefault("HABITS_URL", "http://habits:8000")
 os.environ.setdefault("TRACKING_URL", "http://tracking:8000")
 os.environ.setdefault("INSIGHTS_URL", "http://insights:8000")
 os.environ.setdefault("BILLING_URL", "http://billing:8000")
+os.environ.setdefault("NOTIFICATIONS_URL", "http://notifications:8000")
 
 import httpx
 import main

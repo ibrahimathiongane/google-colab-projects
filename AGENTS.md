@@ -13,6 +13,7 @@ Science-based habit tracker (microservices). Differentiator: behavioral science 
   - `tracking/` :8003 — check-ins, streaks, recovery
   - `insights/` :8004 — success rate, habit strength, best time
   - `billing/` :8005 — Stripe Checkout (Pro/year + Lifetime), customer portal, webhook-driven entitlements
+  - `notifications/` :8006 — web-push reminders (VAPID, opt-in subscriptions, cue-time scheduler)
 - **Migrations** (`migrations/`): Alembic, canonical schema (`migrations/models.py`), runs once via the `migrations` compose service.
 - **Frontend** (`frontend/`): React + Vite + Recharts. Dev on :5173 (vite), prod behind nginx.
 - **Landing** (`landing/`): separate static marketing site (React + Vite, **no API, no gateway**). Dev on :5174, prod behind its own nginx; build context is the repo root because it imports `frontend/src/tokens.css`. "Open app" CTAs point to `VITE_APP_URL` (default `http://localhost:5173`).
@@ -49,7 +50,6 @@ COMPOSE_FLAGS="-f docker-compose.yml -f docker-compose.prod.yml" ./scripts/backu
 - Auth routes are rate-limited (sliding window in `services/users/rate_limit.py`); other routes are not.
 - Password reset: `POST /users/forgot-password` **always returns 200** (no account enumeration) and stores only the SHA-256 of a single active token (`users.reset_token_hash`, 30 min TTL via `RESET_TTL_MINUTES`); `POST /users/reset-password` consumes the link and revokes every refresh token (logout everywhere). Both are in the gateway `PUBLIC_PATHS`. Email goes over SMTP (`SMTP_*` env in `services/users/mailer.py`) — with no `SMTP_HOST` the reset link is logged instead, so dev/tests never need credentials; links point at `{APP_URL}/reset-password`. Mail copy is English-only for now.
 - Frontend calls `/api/{service}/{path}` (vite dev proxy → gateway, nginx in prod) and auto-refreshes an expired access token once (`frontend/src/api.js`).
-- Monetisation (Stripe, test keys first): `billing/` creates Checkout Sessions (`STRIPE_PRICE_PRO` subscription, `STRIPE_PRICE_LIFETIME` one-time) and portal sessions; `POST /billing/webhooks` is in the gateway `PUBLIC_PATHS` (signature verified with `STRIPE_WEBHOOK_SECRET`) and webhook handlers **only read the payload** — they never call the Stripe API back. Entitlement = a `billing_subscriptions` row with `status ∈ {active, trialing, past_due}`, or `plan=lifetime` always. The free plan allows **one habit**: `services/habits/main.py` checks its own mirror of `billing_subscriptions` (shared Postgres, no service hop) and rejects creation with **402** `"... upgrade to Pro"` — edits/deletes are never gated, and existing habits are never limited retroactively. `GET /billing/` returns the current plan for the Plan page (`frontend/src/pages/Plan.jsx`).
 - Check-in upsert: one per `(habit_id, date)` — re-checking toggles completion. Dates are `YYYY-MM-DD` in the *user's* timezone (`localDate()`).
 - Lint: `ruff.toml` at the root pins the Python rule set; ESLint flat config lives in `frontend/eslint.config.js`.
 - Tests must run in **separate pytest processes** (services share module names `main`, `models`, `db`, `schemas`) — `scripts/test.sh` does this for you.

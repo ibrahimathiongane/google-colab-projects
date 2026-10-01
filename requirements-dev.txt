@@ -8,3 +8,5 @@ pytest==9.1.1
 pytest-cov==7.1.0
 ruff==0.16.9
 -r services/billing/requirements.txt
+-r services/billing/requirements.txt
+-r services/notifications/requirements.txt

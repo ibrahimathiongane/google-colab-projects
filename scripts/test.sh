@@ -23,7 +23,7 @@ run "$PYTHON" -m ruff check gateway services migrations
 # --- Backend tests ----------------------------------------------------------
 # One pytest process per app: every service uses the same module names
 # (main, models, db, schemas), so a single run would collide.
-for app in gateway services/users services/billing services/habits services/tracking services/insights; do
+for app in gateway services/users services/billing services/notifications services/habits services/tracking services/insights; do
   run "$PYTHON" -m pytest "$app/tests" -q
 done
 

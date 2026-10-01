@@ -143,3 +143,54 @@ class BillingSubscription(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
+
+
+class PushSubscription(Base):
+    """One row per device/browser that opted into web-push reminders.
+
+    ``tz_offset`` (minutes east of UTC) is captured at subscribe time for
+    THAT device — reminders fire at the habit's cue_time in the device's
+    local time, exactly like the insights ``tz_offset``.
+    """
+
+    __tablename__ = "push_subscriptions"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False, index=True)
+    endpoint = Column(String(512), nullable=False, unique=True, index=True)
+    p256dh = Column(String(128), nullable=False)
+    auth = Column(String(64), nullable=False)
+    tz_offset = Column(Integer, nullable=False, default=0)
+    lang = Column(String(5), nullable=False, default="en")
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
+class ReminderLog(Base):
+    """Anti-duplicate: at most one push per device, habit and local day."""
+
+    __tablename__ = "reminder_logs"
+    __table_args__ = (
+        UniqueConstraint(
+            "subscription_id", "habit_id", "date", name="uq_reminder_day"
+        ),
+    )
+
+    id = Column(Integer, primary_key=True)
+    subscription_id = Column(
+        Integer,
+        ForeignKey("push_subscriptions.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    habit_id = Column(
+        Integer,
+        ForeignKey("habits.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    date = Column(Date, nullable=False)
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )

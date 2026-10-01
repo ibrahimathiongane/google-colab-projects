@@ -60,6 +60,7 @@ optional privacy-friendly analytics (`VITE_ANALYTICS_SRC`, Plausible-compatible)
 | tracking | 8003 | Check-ins, streaks, recovery |
 | insights | 8004 | Success rate, habit strength, best time |
 | billing | 8005 | Stripe checkout, customer portal, entitlements |
+| notifications | 8006 | Web-push reminders (VAPID, cue-time scheduler) |
 | migrations | — | Alembic schema bootstrap (runs once) |
 | frontend | 5173 | React SPA served by nginx (proxies `/api` → gateway) |
 | landing | 5174 | Static marketing site (no API, no gateway) |
@@ -97,6 +98,10 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
 | POST | `/api/billing/checkout` | Stripe Checkout session (`{"plan": "pro" \| "lifetime"}`) |
 | POST | `/api/billing/portal` | Stripe customer portal session |
 | POST | `/api/billing/webhooks` | Stripe events (public, signature-verified) |
+| GET | `/api/notifications/` | Is this device subscribed to reminders? |
+| GET | `/api/notifications/vapid-public-key` | VAPID key for `PushManager.subscribe` |
+| POST | `/api/notifications/subscribe` | Save this device (endpoint, keys, tz, lang) |
+| POST | `/api/notifications/unsubscribe` | Remove this device |
 
 ## Security notes (Phase 0)
 

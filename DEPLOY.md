@@ -105,6 +105,19 @@ Webhooks → Add endpoint):
 Without `STRIPE_SECRET_KEY` the app still runs: checkout/portal answer
 `503 Billing is not configured` and everyone stays on the free plan.
 
+Web Push reminders (bell in the dashboard) need a VAPID key pair. Generate
+one and paste it into `.env`:
+
+```bash
+python scripts/gen-vapid-keys.py   # prints VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY
+```
+
+Without the keys the app still runs: enabling reminders answers
+`503 Notifications are not configured`. The `notifications` container runs
+the scheduler itself (every 30 s) — no cron needed. Reminders are sent at
+each habit's `cue_time` **in the subscribing device's timezone**, only when
+the habit is not yet completed that day, and at most once per day.
+
 Start everything:
 
 ```bash

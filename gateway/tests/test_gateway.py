@@ -138,3 +138,15 @@ def test_stripe_webhook_is_public(client):
 def test_billing_routes_require_auth_except_webhooks(client):
     assert client.post("/api/billing/checkout", json={"plan": "pro"}).status_code == 401
     assert client.get("/api/billing/").status_code == 401
+
+
+def test_notifications_routes_require_auth(client):
+    """No public path in the notifications service — all behind the JWT."""
+    assert client.get("/api/notifications/").status_code == 401
+    assert client.get("/api/notifications/vapid-public-key").status_code == 401
+    assert (
+        client.post("/api/notifications/subscribe", json={}).status_code == 401
+    )
+    assert (
+        client.post("/api/notifications/unsubscribe", json={}).status_code == 401
+    )

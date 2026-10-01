@@ -112,6 +112,25 @@ services:
     healthcheck: *py-healthcheck
     restart: unless-stopped
 
+  notifications:
+    build: ./services/notifications
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-habit}:${POSTGRES_PASSWORD:-habit}@postgres:5432/${POSTGRES_DB:-habit_tracker}
+      # Web Push (VAPID) — generate keys, see .env.example / DEPLOY.md.
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_SUBJECT: ${VAPID_SUBJECT:-mailto:admin@localhost}
+      # Scheduler tuning (the loop runs inside this container).
+      REMINDER_INTERVAL_SECONDS: ${REMINDER_INTERVAL_SECONDS:-30}
+      REMINDER_LOOP: ${REMINDER_LOOP:-on}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    healthcheck: *py-healthcheck
+    restart: unless-stopped
+
   gateway:
     build: ./gateway
     environment:
@@ -122,6 +141,7 @@ services:
       TRACKING_URL: http://tracking:8000
       INSIGHTS_URL: http://insights:8000
       BILLING_URL: http://billing:8000
+      NOTIFICATIONS_URL: http://notifications:8000
     ports:
       - "${GATEWAY_PORT:-8000}:8000"
     depends_on:
@@ -134,6 +154,8 @@ services:
       insights:
         condition: service_healthy
       billing:
+        condition: service_healthy
+      notifications:
         condition: service_healthy
     healthcheck: *py-healthcheck
     restart: unless-stopped

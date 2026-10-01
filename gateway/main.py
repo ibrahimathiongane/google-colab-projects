@@ -53,6 +53,7 @@ SERVICES = {
     "tracking": os.environ["TRACKING_URL"],
     "insights": os.environ["INSIGHTS_URL"],
     "billing": os.environ["BILLING_URL"],
+    "notifications": os.environ["NOTIFICATIONS_URL"],
 }
 
 # Paths reachable without a valid JWT: (service, normalized path).
