@@ -30,6 +30,21 @@ describe("registerServiceWorker", () => {
     expect(result).toBeNull();
   });
 
+  it("does not register inside the native Capacitor shell", async () => {
+    const serviceWorker = { register: vi.fn() };
+    window.Capacitor = { isNativePlatform: () => true };
+    try {
+      const result = await registerServiceWorker({
+        prod: true,
+        serviceWorker,
+      });
+      expect(result).toBeNull();
+      expect(serviceWorker.register).not.toHaveBeenCalled();
+    } finally {
+      delete window.Capacitor;
+    }
+  });
+
   it("registers /sw.js in production", async () => {
     const serviceWorker = { register: vi.fn().mockResolvedValue({}) };
     await registerServiceWorker({ prod: true, serviceWorker });

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, tzOffset } from "../api";
+import { isNativeApp } from "../native";
 import { translateApiError } from "../i18n/apiErrors";
 
 /** base64url → Uint8Array (the format PushManager.subscribe expects). */
@@ -27,7 +28,10 @@ export default function RemindersToggle() {
     typeof window !== "undefined" &&
     "Notification" in window &&
     "serviceWorker" in navigator &&
-    "PushManager" in window;
+    "PushManager" in window &&
+    // Web push is never delivered inside the Capacitor WebView (no native
+    // APNs/FCM in Phase 1) — show the plain "unsupported" hint instead.
+    !isNativeApp();
 
   useEffect(() => {
     if (!supported) {

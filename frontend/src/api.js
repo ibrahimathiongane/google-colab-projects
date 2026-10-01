@@ -1,4 +1,7 @@
-const API = "/api";
+// Same-origin "/api" on the web. The Capacitor shell loads the bundle from
+// a local WebView (origin localhost), so the API origin is baked at build
+// time: VITE_API_URL=https://app.example.com (no trailing slash).
+const API = `${import.meta.env.VITE_API_URL ?? ""}/api`;
 
 let token = localStorage.getItem("token");
 let refreshToken = localStorage.getItem("refresh_token");

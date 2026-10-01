@@ -144,6 +144,33 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
   (`frontend/src/i18n/apiErrors.js`); unknown messages pass through as-is.
 - Dates are formatted with the active locale (`en-US` / `fr-FR`).
 
+### Mobile (Android, Capacitor)
+
+The app also ships as an Android app: a Capacitor 8 shell
+(`frontend/capacitor.config.json`, project in `frontend/android/`, id
+`com.habittracker.app`) that loads a **local bundle** of the same frontend.
+
+- The WebView has its own origin, so the API origin is baked at build time:
+  `VITE_API_URL=https://app.example.com npm --prefix frontend run build:mobile`
+  (no trailing slash). Without it the build keeps same-origin `/api` (web
+  default) and every call would 404 inside the shell.
+- The shell never registers the service worker and the reminders bell shows
+  "unsupported": WebView push doesn't deliver (native APNs/FCM is out of
+  Phase 1) — see `frontend/src/native.js`.
+- Local API testing: add the shell origin (`http://localhost`) to
+  `ALLOWED_ORIGINS` and bridge the gateway to the device with
+  `adb reverse tcp:8000 tcp:8000` (works on emulator and USB device), then
+  build with `VITE_API_URL=http://localhost:8000`. Cleartext HTTP is only
+  permitted to loopback hosts
+  (`frontend/android/app/src/main/res/xml/network_security_config.xml`);
+  a public API must be HTTPS.
+- Debug APK: `npm --prefix frontend run build:mobile`, then
+  `cd frontend/android && ./gradlew assembleDebug` →
+  `app/build/outputs/apk/debug/app-debug.apk`. Needs the Android SDK
+  (`ANDROID_HOME` + `local.properties`) and **JDK 17–24** — Gradle 8.14
+  won't run on newer JDKs; Android Studio is optional.
+- iOS: needs a Mac — run `npx cap add ios` there, same config.
+
 ## Design system (Linear-inspired)
 
 Dark-first, achromatic canvas + one accent (`#5e6ad2`), shared by the app

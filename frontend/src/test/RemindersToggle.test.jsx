@@ -57,6 +57,20 @@ describe("RemindersToggle", () => {
     expect(api.remindersStatus).not.toHaveBeenCalled();
   });
 
+  it("stays unsupported inside the native Capacitor shell", async () => {
+    // WebView push never delivers — even with a fully capable browser API.
+    stubBrowser({ permission: "default", registration: null });
+    window.Capacitor = { isNativePlatform: () => true };
+    try {
+      render(<RemindersToggle />);
+      const button = await screen.findByRole("button");
+      expect(button).toBeDisabled();
+      expect(api.remindersStatus).not.toHaveBeenCalled();
+    } finally {
+      delete window.Capacitor;
+    }
+  });
+
   it("enables reminders: permission → subscribe → POST", async () => {
     api.remindersStatus.mockResolvedValue({ subscribed: false });
     api.remindersPublicKey.mockResolvedValue({ publicKey: "AQID" });

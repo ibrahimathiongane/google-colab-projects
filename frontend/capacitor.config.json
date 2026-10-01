@@ -1,0 +1,20 @@
+{
+  "appId": "com.habittracker.app",
+  "appName": "Habit Tracker",
+  "webDir": "dist",
+  "backgroundColor": "#08090a",
+  "plugins": {
+    "SplashScreen": {
+      "backgroundColor": "#08090a",
+      "launchAutoHide": true,
+      "androidScaleType": "CENTER_CROP"
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#08090a"
+    }
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}
