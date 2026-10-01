@@ -43,6 +43,27 @@ def if_then_sentence(anchor: str, tiny_behavior: str, celebration: str) -> str:
     )
 
 
+# --- Plan gate (free = 1 habit) ---------------------------------------------
+# The plan is read from the shared billing tables (no service hop); the
+# billing service owns any writes. Existing habits are never retro-limited:
+# only creating a new one beyond the limit is blocked.
+FREE_HABIT_LIMIT = 1
+PAID_STATUSES = ("active", "trialing", "past_due")  # mirror of billing
+
+
+def current_plan(db: Session, user_id: int) -> str:
+    row = (
+        db.query(models.BillingSubscription).filter_by(user_id=user_id).first()
+    )
+    if row is None:
+        return "free"
+    if row.plan == "lifetime":
+        return "lifetime"
+    if row.plan == "pro" and row.status in PAID_STATUSES:
+        return "pro"
+    return "free"
+
+
 def habit_payload(habit: models.Habit) -> dict:
     return {
         "id": habit.id,
@@ -82,6 +103,16 @@ def create_habit(
     user_id: int = Depends(require_user_id),
     db: Session = Depends(get_db),
 ):
+    if current_plan(db, user_id) == "free":
+        active = (
+            db.query(models.Habit)
+            .filter_by(user_id=user_id, active=True)
+            .count()
+        )
+        if active >= FREE_HABIT_LIMIT:
+            raise HTTPException(
+                402, "Free plan allows one habit — upgrade to Pro"
+            )
     habit = models.Habit(
         user_id=user_id,
         name=body.name,

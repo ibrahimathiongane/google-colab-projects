@@ -7,6 +7,7 @@
     "dashboard": "Tableau de bord",
     "newHabit": "Nouvelle habitude",
     "insights": "Analyses",
+    "plan": "Forfait",
     "logout": "Déconnexion",
     "language": "Langue"
   },
@@ -36,6 +37,34 @@
     "missingToken": "Ce lien de réinitialisation est invalide. Demandez-en un nouveau.",
     "success": "Mot de passe mis à jour — vous pouvez vous connecter.",
     "requestNew": "Demander un nouveau lien"
+  },
+  "plan": {
+    "title": "Votre forfait",
+    "currentLabel": "Forfait actuel",
+    "currentBadge": "Forfait actuel",
+    "freeHint": "Par défaut",
+    "manage": "Gérer la facturation",
+    "checkoutSuccess": "Paiement confirmé — merci !",
+    "checkoutCancel": "Aucun prélèvement. Vous pouvez passer à l'échelle à tout moment.",
+    "free": {
+      "name": "Gratuit",
+      "price": "0 $",
+      "body": "Une habitude à la fois — tout ce qu'il faut pour commencer."
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "39,99 $",
+      "period": "par an",
+      "body": "Habitudes illimitées, historique complet des analyses, feuille de route prioritaire.",
+      "cta": "Passer Pro"
+    },
+    "lifetime": {
+      "name": "À vie",
+      "price": "79 $",
+      "period": "une fois",
+      "body": "Payez une fois, gardez Pro pour toujours.",
+      "cta": "Paiement unique"
+    }
   },
   "dashboard": {
     "today": "Aujourd'hui —",
@@ -122,6 +151,7 @@
     "emailTaken": "Ce courriel est déjà inscrit.",
     "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
     "resetLinkInvalid": "Ce lien de réinitialisation est invalide ou a expiré. Demandez-en un nouveau.",
+    "upgradeRequired": "Le forfait gratuit inclut 1 habitude. Passez à Pro pour des habitudes illimitées — voir la page Plan.",
     "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
     "notFound": "Introuvable.",
     "server": "Service indisponible. Veuillez réessayer.",

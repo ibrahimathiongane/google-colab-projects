@@ -7,6 +7,7 @@
     "dashboard": "Dashboard",
     "newHabit": "New Habit",
     "insights": "Insights",
+    "plan": "Plan",
     "logout": "Logout",
     "language": "Language"
   },
@@ -36,6 +37,34 @@
     "missingToken": "This reset link is invalid. Request a new one.",
     "success": "Password updated — you can sign in now.",
     "requestNew": "Request a new link"
+  },
+  "plan": {
+    "title": "Your plan",
+    "currentLabel": "Current plan",
+    "currentBadge": "Current plan",
+    "freeHint": "Default",
+    "manage": "Manage billing",
+    "checkoutSuccess": "Payment confirmed — thank you!",
+    "checkoutCancel": "No charge was made. You can upgrade any time.",
+    "free": {
+      "name": "Free",
+      "price": "$0",
+      "body": "One habit at a time — everything you need to start."
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "$39.99",
+      "period": "per year",
+      "body": "Unlimited habits, full insights history, priority roadmap.",
+      "cta": "Go Pro"
+    },
+    "lifetime": {
+      "name": "Lifetime",
+      "price": "$79",
+      "period": "once",
+      "body": "Pay once and keep Pro forever.",
+      "cta": "Buy lifetime"
+    }
   },
   "dashboard": {
     "today": "Today —",
@@ -122,6 +151,7 @@
     "emailTaken": "This email is already registered.",
     "passwordTooShort": "Password must be at least 8 characters.",
     "resetLinkInvalid": "This reset link is invalid or has expired. Request a new one.",
+    "upgradeRequired": "The free plan includes 1 habit. Upgrade to Pro for unlimited habits — see the Plan page.",
     "sessionExpired": "Your session expired. Please log in again.",
     "notFound": "Not found.",
     "server": "Service unavailable. Please try again.",

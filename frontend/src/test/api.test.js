@@ -139,3 +139,51 @@ describe("password reset endpoints", () => {
     });
   });
 });
+
+describe("billing endpoints", () => {
+  it("billingStatus reads the current plan", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      jsonResponse(200, { plan: "free", has_customer: false }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { api } = await import("../api");
+    await expect(api.billingStatus()).resolves.toEqual({
+      plan: "free",
+      has_customer: false,
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/billing/",
+      expect.objectContaining({ method: "GET" }),
+    );
+  });
+
+  it("checkout posts the chosen plan", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse(200, { url: "https://stripe/x" }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { api } = await import("../api");
+    await expect(api.checkout("lifetime")).resolves.toEqual({
+      url: "https://stripe/x",
+    });
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      plan: "lifetime",
+    });
+  });
+
+  it("portal opens the Stripe customer portal", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse(200, { url: "https://portal/x" }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { api } = await import("../api");
+    await api.portal();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/billing/portal",
+      expect.objectContaining({ method: "POST" }),
+    );
+  });
+});

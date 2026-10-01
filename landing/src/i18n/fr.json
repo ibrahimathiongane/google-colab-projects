@@ -51,16 +51,16 @@
       "price": "39,99 $",
       "period": "par an",
       "body": "Habitudes illimitées, historique complet des analyses, feuille de route prioritaire.",
-      "cta": "Bientôt"
+      "cta": "Passer Pro"
     },
     "lifetime": {
       "name": "À vie",
       "price": "79 $",
       "period": "une fois",
       "body": "Payez une fois, gardez tout — pour les premiers convaincus.",
-      "cta": "Bientôt"
+      "cta": "Prendre à vie"
     },
-    "note": "Les paiements ne sont pas encore activés — l'app est gratuite le temps de la construire."
+    "note": "Paiements sécurisés par Stripe."
   },
   "footer": {
     "tagline": "Suivi d'habitudes basé sur la science — petites habitudes, vrai automatisme.",

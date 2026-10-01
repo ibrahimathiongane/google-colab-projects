@@ -91,6 +91,10 @@ export const api = {
   resetPassword: (token, password) =>
     req("POST", "/users/reset-password", { token, password }),
 
+  billingStatus: () => req("GET", "/billing/"),
+  checkout: (plan) => req("POST", "/billing/checkout", { plan }),
+  portal: () => req("POST", "/billing/portal"),
+
   listHabits: () => req("GET", "/habits/"),
   createHabit: (h) => req("POST", "/habits/", h),
   updateHabit: (id, payload) => req("PUT", `/habits/${id}`, payload),

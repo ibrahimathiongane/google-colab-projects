@@ -105,6 +105,7 @@ All routes prefixed with `/api`. Auth via `Authorization: Bearer <token>`.
 - Login/register are rate-limited (sliding window per email and per IP).
 - Password reset links are single-use (hashed at rest, 30 min TTL, same 200 answer for unknown accounts) and changing the password revokes every session; email goes through SMTP (`SMTP_*` env, link logged when unset).
 - Containers run as a non-root user; images are pinned.
+- Monetisation: Stripe Checkout runs on Stripe's hosted pages (no card data touches the app); webhooks are signature-verified and never call the Stripe API back. The free plan is limited to one habit — creations beyond that return `402`, edits/deletes stay open.
 
 ## Phase 1 features
 

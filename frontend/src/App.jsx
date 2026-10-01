@@ -6,6 +6,7 @@ import LanguageSwitcher from "./components/LanguageSwitcher";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Plan from "./pages/Plan";
 import Dashboard from "./pages/Dashboard";
 import NewHabit from "./pages/NewHabit";
 import Insights from "./pages/Insights";
@@ -50,6 +51,7 @@ export default function App() {
           <NavLink to="/">{t("nav.dashboard")}</NavLink>
           <NavLink to="/new">{t("nav.newHabit")}</NavLink>
           <NavLink to="/insights">{t("nav.insights")}</NavLink>
+          <NavLink to="/plan">{t("nav.plan")}</NavLink>
           <LanguageSwitcher />
           <button onClick={logout}>{t("nav.logout")}</button>
         </nav>
@@ -84,6 +86,10 @@ export default function App() {
         <Route
           path="/insights"
           element={user ? <Insights /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/plan"
+          element={user ? <Plan /> : <Navigate to="/login" />}
         />
       </Routes>
     </div>

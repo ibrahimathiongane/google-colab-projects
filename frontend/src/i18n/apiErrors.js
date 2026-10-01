@@ -11,6 +11,7 @@ const RULES = [
   ["This email cannot be used", "emailTaken"],
   ["at least 8 characters", "passwordTooShort"],
   ["Invalid or expired reset link", "resetLinkInvalid"],
+  ["upgrade to Pro", "upgradeRequired"],
   ["Invalid refresh token", "sessionExpired"],
   ["Authentication required", "sessionExpired"],
   ["database unavailable", "server"],

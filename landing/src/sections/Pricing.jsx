@@ -1,6 +1,10 @@
 import { useTranslation } from "react-i18next";
 
-const PLANS = ["free", "pro", "lifetime"];
+const PLANS = [
+  { key: "free", path: "/login" },
+  { key: "pro", path: "/plan" },
+  { key: "lifetime", path: "/plan" },
+];
 
 export default function Pricing({ appUrl }) {
   const { t } = useTranslation();
@@ -10,32 +14,22 @@ export default function Pricing({ appUrl }) {
       <h2>{t("pricing.title")}</h2>
       <p className="section-sub">{t("pricing.subtitle")}</p>
       <div className="pricing-grid">
-        {PLANS.map((plan) => {
-          const soon = plan !== "free";
-          const href = soon ? undefined : `${appUrl}/login`;
-          return (
-            <article
-              className={`card plan ${plan === "pro" ? "featured" : ""}`}
-              key={plan}
-            >
-              <h3>{t(`pricing.${plan}.name`)}</h3>
-              <p className="price">
-                {t(`pricing.${plan}.price`)}{" "}
-                <span className="period">{t(`pricing.${plan}.period`)}</span>
-              </p>
-              <p className="plan-body">{t(`pricing.${plan}.body`)}</p>
-              {soon ? (
-                <span className="btn btn-soon" aria-disabled="true">
-                  {t(`pricing.${plan}.cta`)}
-                </span>
-              ) : (
-                <a className="btn btn-primary" href={href}>
-                  {t(`pricing.${plan}.cta`)}
-                </a>
-              )}
-            </article>
-          );
-        })}
+        {PLANS.map(({ key, path }) => (
+          <article
+            className={`card plan ${key === "pro" ? "featured" : ""}`}
+            key={key}
+          >
+            <h3>{t(`pricing.${key}.name`)}</h3>
+            <p className="price">
+              {t(`pricing.${key}.price`)}{" "}
+              <span className="period">{t(`pricing.${key}.period`)}</span>
+            </p>
+            <p className="plan-body">{t(`pricing.${key}.body`)}</p>
+            <a className="btn btn-primary" href={`${appUrl}${path}`}>
+              {t(`pricing.${key}.cta`)}
+            </a>
+          </article>
+        ))}
       </div>
       <p className="pricing-note">{t("pricing.note")}</p>
     </section>

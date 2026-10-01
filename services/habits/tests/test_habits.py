@@ -158,3 +158,70 @@ def test_update_validation(client):
     # Nothing was applied by the failed calls.
     after = client.get("/", headers=USER_A).json()[0]
     assert after == created
+
+
+# --- Free plan gate -----------------------------------------------------------
+
+
+def _set_plan(user_id: int, plan: str = "pro", status: str = "active"):
+    import models
+    from db import SessionLocal
+
+    db = SessionLocal()
+    try:
+        db.add(models.BillingSubscription(user_id=user_id, plan=plan, status=status))
+        db.commit()
+    finally:
+        db.close()
+
+
+def test_free_plan_is_limited_to_one_habit(client):
+    first = client.post("/", json=valid_habit(), headers=USER_A)
+    assert first.status_code == 201
+
+    second = client.post("/", json=valid_habit(name="Deuxième"), headers=USER_A)
+    assert second.status_code == 402
+    assert "upgrade to Pro" in second.json()["detail"]
+
+    # Other users are unaffected.
+    assert (
+        client.post("/", json=valid_habit(), headers=USER_B).status_code == 201
+    )
+
+
+def test_pro_plan_allows_unlimited_habits(client):
+    _set_plan(user_id=1, plan="pro", status="active")
+    for i in range(3):
+        resp = client.post("/", json=valid_habit(name=f"H{i}"), headers=USER_A)
+        assert resp.status_code == 201
+
+
+def test_lifetime_plan_is_not_limited(client):
+    _set_plan(user_id=1, plan="lifetime", status="active")
+    for i in range(3):
+        resp = client.post("/", json=valid_habit(name=f"H{i}"), headers=USER_A)
+        assert resp.status_code == 201
+
+
+def test_canceled_subscription_falls_back_to_free(client):
+    _set_plan(user_id=1, plan="pro", status="canceled")
+    assert client.post("/", json=valid_habit(), headers=USER_A).status_code == 201
+    second = client.post("/", json=valid_habit(name="Deuxième"), headers=USER_A)
+    assert second.status_code == 402
+
+
+def test_gate_blocks_only_creation_not_edits_or_deletes(client):
+    created = client.post("/", json=valid_habit(), headers=USER_A).json()
+    # Editing the existing habit still works.
+    assert (
+        client.put(f"/{created['id']}", json={"name": "Renommée"}, headers=USER_A)
+        .status_code
+        == 200
+    )
+    # Deleting frees the slot for the next creation.
+    assert client.delete(f"/{created['id']}", headers=USER_A).status_code == 200
+    assert (
+        client.post("/", json=valid_habit(name="Suivante"), headers=USER_A)
+        .status_code
+        == 201
+    )

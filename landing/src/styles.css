@@ -189,17 +189,6 @@ img {
   color: var(--primary-contrast);
 }
 
-.btn-soon {
-  color: var(--ink-30);
-  cursor: not-allowed;
-}
-
-.btn-soon:hover {
-  background: transparent;
-  color: var(--ink-30);
-  border-color: var(--border-hairline);
-}
-
 .lang-switcher {
   display: flex;
   gap: 2px;

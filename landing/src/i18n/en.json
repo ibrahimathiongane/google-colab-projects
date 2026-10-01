@@ -51,16 +51,16 @@
       "price": "$39.99",
       "period": "per year",
       "body": "Unlimited habits, full insights history, priority roadmap.",
-      "cta": "Coming soon"
+      "cta": "Get Pro"
     },
     "lifetime": {
       "name": "Lifetime",
       "price": "$79",
       "period": "once",
       "body": "Pay once, keep everything — for early believers.",
-      "cta": "Coming soon"
+      "cta": "Get Lifetime"
     },
-    "note": "Payments aren't enabled yet — the app is free while we build it."
+    "note": "Secure payments powered by Stripe."
   },
   "footer": {
     "tagline": "Science-based habit tracking — tiny habits, real automaticity.",

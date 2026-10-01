@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import App, { APP_URL } from "../App";
 import i18n from "../i18n";
 
@@ -35,15 +35,31 @@ describe("landing page", () => {
       "href",
       "#pricing",
     );
-    expect(screen.getAllByText("Bientôt")).toHaveLength(2);
+    expect(screen.queryAllByText("Bientôt")).toHaveLength(0);
+    const pricing = within(document.getElementById("pricing"));
+    expect(pricing.getByRole("link", { name: "Passer Pro" })).toHaveAttribute(
+      "href",
+      `${APP_URL}/plan`,
+    );
   });
 
-  it("shows paid plans as coming soon, not fake buttons", async () => {
+  it("links every plan to the right place in the app", async () => {
     await i18n.changeLanguage("en");
     render(<App />);
-    expect(screen.getAllByText("Coming soon")).toHaveLength(2);
-    expect(screen.queryAllByRole("link", { name: "Coming soon" })).toHaveLength(
-      0,
+    const pricing = within(document.getElementById("pricing"));
+    expect(screen.queryAllByText("Coming soon")).toHaveLength(0);
+    // The hero shares the "Start free" copy — scope to the pricing cards.
+    expect(pricing.getByRole("link", { name: "Start free" })).toHaveAttribute(
+      "href",
+      `${APP_URL}/login`,
+    );
+    expect(pricing.getByRole("link", { name: "Get Pro" })).toHaveAttribute(
+      "href",
+      `${APP_URL}/plan`,
+    );
+    expect(pricing.getByRole("link", { name: "Get Lifetime" })).toHaveAttribute(
+      "href",
+      `${APP_URL}/plan`,
     );
   });
 });

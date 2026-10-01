@@ -346,6 +346,90 @@ input:focus {
   gap: var(--space-3);
 }
 
+/* --- Plan / pricing ---------------------------------------------------------- */
+
+.plan-page {
+  max-width: 780px;
+  margin: var(--space-8) auto;
+  padding: 0 var(--space-4);
+}
+
+.plan-page h1 {
+  letter-spacing: var(--tracking-tighter);
+}
+
+.notice {
+  color: var(--success);
+  font-size: 14px;
+  margin-bottom: var(--space-3);
+}
+
+.plans {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.plan-card {
+  background: var(--surface-1);
+  border: var(--border-hairline);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.plan-card.is-current {
+  border-color: var(--primary);
+}
+
+.plan-card h3 {
+  font-size: 15px;
+  letter-spacing: var(--tracking-tight);
+}
+
+.plan-card .price {
+  font-size: 26px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tighter);
+}
+
+.plan-card .period {
+  font-size: 13px;
+  font-weight: var(--weight-regular);
+  color: var(--ink-50);
+}
+
+.plan-body {
+  color: var(--ink-50);
+  font-size: 13.5px;
+  line-height: 1.5;
+  flex: 1;
+  margin-bottom: var(--space-2);
+}
+
+.plan-badge {
+  align-self: flex-start;
+  font-size: 12.5px;
+  font-weight: var(--weight-medium);
+  color: var(--primary-hover);
+  border: var(--border-hairline);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+}
+
+.plan-badge.muted {
+  color: var(--ink-30);
+}
+
+@media (max-width: 720px) {
+  .plans {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* --- Dashboard / habit card -------------------------------------------------- */
 
 .dashboard h2 {
